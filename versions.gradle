@@ -1,0 +1,9 @@
+ext {
+    supportVersion = '23.2.1'
+    rxjavaVersion = '1.1.2'
+
+    junitVersion = '4.12'
+    powerMockVersion = '1.6.2'
+    robolectricVersion = '3.0'
+    mockitoVersion = '2.0.31-beta'
+}

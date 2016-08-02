@@ -1,4 +1,4 @@
-package ru.arturvasilov.sqlite;
+package ru.arturvasilov.sqlite.core;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
@@ -8,6 +8,9 @@ import android.support.annotation.Nullable;
  * @author Artur Vasilov
  */
 public class SQLiteUtils {
+
+    private SQLiteUtils() {
+    }
 
     public static boolean isEmptyCursor(@Nullable Cursor cursor) {
         if (cursor == null) {

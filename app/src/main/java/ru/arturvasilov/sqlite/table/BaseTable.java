@@ -17,6 +17,11 @@ public abstract class BaseTable<T> implements Table<T> {
         return SQLiteContentProvider.getBaseUri().buildUpon().appendPath(getTableName()).build();
     }
 
+    @Override
+    public int getLastUpgradeVersion() {
+        return 1;
+    }
+
     @NonNull
     @Override
     public String getTableName() {
@@ -25,7 +30,7 @@ public abstract class BaseTable<T> implements Table<T> {
 
     @Override
     public void onUpgrade(@NonNull SQLiteDatabase database, int oldVersion, int newVersion) {
-        if (newVersion <= getLastUpgradeVersion()) {
+        if (newVersion <= getLastUpgradeVersion() && newVersion > oldVersion) {
             database.execSQL("DROP TABLE IF EXISTS " + getTableName());
             onCreate(database);
         }

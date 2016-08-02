@@ -1,19 +1,16 @@
 package ru.arturvasilov.sqlite.table;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.BaseColumns;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 
-import ru.arturvasilov.sqlite.utils.TestTable;
+import ru.arturvasilov.sqlite.testutils.TestTable;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
 
 @RunWith(JUnit4.class)
 public class TableBuilderTest {
@@ -22,8 +19,8 @@ public class TableBuilderTest {
 
     @Before
     public void setUp() throws Exception {
-        mDb = mock(SQLiteDatabase.class);
-        doNothing().when(mDb).execSQL(anyString());
+        mDb = Mockito.mock(SQLiteDatabase.class);
+        Mockito.doNothing().when(mDb).execSQL(anyString());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -39,7 +36,7 @@ public class TableBuilderTest {
                 .intColumn("test")
                 .execute(mDb);
 
-        verify(mDb).execSQL(sql);
+        Mockito.verify(mDb).execSQL(sql);
     }
 
     @Test
@@ -50,19 +47,19 @@ public class TableBuilderTest {
                 .stringColumn("test")
                 .execute(mDb);
 
-        verify(mDb).execSQL(sql);
+        Mockito.verify(mDb).execSQL(sql);
     }
 
     @Test
     public void testPrimaryKeyWithIntColumn() throws Exception {
-        String sql = "CREATE TABLE IF NOT EXISTS TestTable(" + BaseColumns._ID + " INTEGER PRIMARY KEY, test INTEGER);";
+        String sql = "CREATE TABLE IF NOT EXISTS TestTable(test INTEGER, PRIMARY KEY (test));";
 
         TableBuilder.create(TestTable.TABLE)
-                .primaryKey()
                 .intColumn("test")
+                .primaryKey("test")
                 .execute(mDb);
 
-        verify(mDb).execSQL(sql);
+        Mockito.verify(mDb).execSQL(sql);
     }
 
     @Test
@@ -76,23 +73,39 @@ public class TableBuilderTest {
                 .stringColumn("string2")
                 .execute(mDb);
 
-        verify(mDb).execSQL(sql);
+        Mockito.verify(mDb).execSQL(sql);
     }
 
     @Test
     public void testManyColumnsWithPrimaryKey() throws Exception {
-        String sql = "CREATE TABLE IF NOT EXISTS TestTable(" + BaseColumns._ID +
-                " INTEGER PRIMARY KEY, string1 TEXT, string2 TEXT, int1 INTEGER, int2 INTEGER);";
+        String sql = "CREATE TABLE IF NOT EXISTS TestTable(int1 INTEGER, string1 TEXT, string2 TEXT, int2 INTEGER" +
+                ", PRIMARY KEY (int1));";
 
         TableBuilder.create(TestTable.TABLE)
-                .primaryKey()
+                .primaryKey("int1")
                 .intColumn("int1")
                 .stringColumn("string1")
                 .intColumn("int2")
                 .stringColumn("string2")
                 .execute(mDb);
 
-        verify(mDb).execSQL(sql);
+        Mockito.verify(mDb).execSQL(sql);
+    }
+
+    @Test
+    public void testManyColumnsWithMultiplePrimaryKey() throws Exception {
+        String sql = "CREATE TABLE IF NOT EXISTS TestTable(int1 INTEGER, string1 TEXT, string2 TEXT, int2 INTEGER" +
+                ", PRIMARY KEY (int1, string2));";
+
+        TableBuilder.create(TestTable.TABLE)
+                .primaryKey("int1", "string2")
+                .intColumn("int1")
+                .stringColumn("string1")
+                .intColumn("int2")
+                .stringColumn("string2")
+                .execute(mDb);
+
+        Mockito.verify(mDb).execSQL(sql);
     }
 
 }

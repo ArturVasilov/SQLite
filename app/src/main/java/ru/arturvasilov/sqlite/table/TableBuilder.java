@@ -1,10 +1,10 @@
 package ru.arturvasilov.sqlite.table;
 
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -13,14 +13,14 @@ import java.util.List;
 public final class TableBuilder {
 
     private String mTableName;
-    private boolean mHasPrimaryKey;
+    private final List<String> mPrimaryKeys;
     private final List<String> mIntegerColumns;
     private final List<String> mStringColumns;
 
     private TableBuilder() {
         mIntegerColumns = new ArrayList<>();
         mStringColumns = new ArrayList<>();
-        mHasPrimaryKey = false;
+        mPrimaryKeys = new ArrayList<>();
     }
 
     @NonNull
@@ -31,8 +31,9 @@ public final class TableBuilder {
     }
 
     @NonNull
-    public TableBuilder primaryKey() {
-        mHasPrimaryKey = true;
+    public TableBuilder primaryKey(@NonNull String... keys) {
+        mPrimaryKeys.clear();
+        Collections.addAll(mPrimaryKeys, keys);
         return this;
     }
 
@@ -57,19 +58,14 @@ public final class TableBuilder {
         if (mStringColumns.isEmpty() && mIntegerColumns.isEmpty()) {
             throw new IllegalStateException("No columns present");
         }
-        if (mHasPrimaryKey) {
-            builder.append(BaseColumns._ID)
-                    .append(" INTEGER PRIMARY KEY");
+        if (mIntegerColumns.isEmpty()) {
+            String column = mStringColumns.remove(0);
+            builder.append(column)
+                    .append(" TEXT");
         } else {
-            if (mIntegerColumns.isEmpty()) {
-                String column = mStringColumns.remove(0);
-                builder.append(column)
-                        .append(" TEXT");
-            } else {
-                String column = mIntegerColumns.remove(0);
-                builder.append(column)
-                        .append(" INTEGER");
-            }
+            String column = mIntegerColumns.remove(0);
+            builder.append(column)
+                    .append(" INTEGER");
         }
 
         for (String column : mStringColumns) {
@@ -84,6 +80,16 @@ public final class TableBuilder {
                     .append(" INTEGER");
         }
 
+        if (!mPrimaryKeys.isEmpty()) {
+            builder.append(", PRIMARY KEY (")
+                    .append(mPrimaryKeys.get(0));
+        }
+        for (int i = 1; i < mPrimaryKeys.size(); i++) {
+            builder.append(", ").append(mPrimaryKeys.get(i));
+        }
+        if (!mPrimaryKeys.isEmpty()) {
+            builder.append(")");
+        }
         builder.append(");");
 
         database.execSQL(builder.toString());

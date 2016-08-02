@@ -10,7 +10,7 @@ import ru.arturvasilov.sqlite.table.Table;
 /**
  * @author Artur Vasilov
  */
-public class SQLiteHelper extends SQLiteOpenHelper {
+class SQLiteHelper extends SQLiteOpenHelper {
 
     private final Schema mSchema;
 

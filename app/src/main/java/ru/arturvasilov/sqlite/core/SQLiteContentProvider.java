@@ -11,8 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import ru.arturvasilov.sqlite.SQLiteException;
-
 /**
  * @author Artur Vasilov
  */
@@ -56,7 +54,7 @@ public abstract class SQLiteContentProvider extends ContentProvider {
         SQLiteDatabase database = mSQLiteHelper.getWritableDatabase();
         String table = getType(uri);
         if (TextUtils.isEmpty(table)) {
-            throw new SQLiteException("No such table to query");
+            throw new IllegalArgumentException("No such table to query");
         } else {
             return database.query(table,
                     projection,
@@ -74,7 +72,7 @@ public abstract class SQLiteContentProvider extends ContentProvider {
         SQLiteDatabase database = mSQLiteHelper.getWritableDatabase();
         String table = getType(uri);
         if (TextUtils.isEmpty(table)) {
-            throw new SQLiteException("No such table to insert");
+            throw new IllegalArgumentException("No such table to insert");
         } else {
             long id = database.insertWithOnConflict(table, null, values, SQLiteDatabase.CONFLICT_REPLACE);
             return ContentUris.withAppendedId(uri, id);
@@ -86,7 +84,7 @@ public abstract class SQLiteContentProvider extends ContentProvider {
         SQLiteDatabase database = mSQLiteHelper.getWritableDatabase();
         String table = getType(uri);
         if (TextUtils.isEmpty(table)) {
-            throw new SQLiteException("No such table to insert");
+            throw new IllegalArgumentException("No such table to insert");
         } else {
             int numInserted = 0;
             database.beginTransaction();
@@ -110,7 +108,7 @@ public abstract class SQLiteContentProvider extends ContentProvider {
         SQLiteDatabase database = mSQLiteHelper.getWritableDatabase();
         String table = getType(uri);
         if (TextUtils.isEmpty(table)) {
-            throw new SQLiteException("No such table to delete");
+            throw new IllegalArgumentException("No such table to delete");
         } else {
             return database.delete(table, selection, selectionArgs);
         }
@@ -122,7 +120,7 @@ public abstract class SQLiteContentProvider extends ContentProvider {
         SQLiteDatabase database = mSQLiteHelper.getWritableDatabase();
         String table = getType(uri);
         if (TextUtils.isEmpty(table)) {
-            throw new SQLiteException("No such table to update");
+            throw new IllegalArgumentException("No such table to update");
         } else {
             return database.update(table, values, selection, selectionArgs);
         }

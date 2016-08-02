@@ -1,4 +1,4 @@
-package ru.arturvasilov.sqlite.utils;
+package ru.arturvasilov.sqlite.testutils;
 
 import android.support.annotation.NonNull;
 
@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
  */
 public class TestContentClass {
 
-    private int mId;
+    private final int mId;
     private String mText;
 
     public TestContentClass(int id, @NonNull String text) {
@@ -17,10 +17,6 @@ public class TestContentClass {
 
     public int getId() {
         return mId;
-    }
-
-    public void setId(int id) {
-        mId = id;
     }
 
     @NonNull
@@ -39,8 +35,7 @@ public class TestContentClass {
 
         TestContentClass that = (TestContentClass) o;
 
-        if (getId() != that.getId()) return false;
-        return getText().equals(that.getText());
+        return getId() == that.getId() && getText().equals(that.getText());
 
     }
 

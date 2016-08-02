@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.arturvasilov.sqlite.SQLiteUtils;
+import ru.arturvasilov.sqlite.core.SQLiteUtils;
 import ru.arturvasilov.sqlite.rx.CursorListMapper;
 import ru.arturvasilov.sqlite.rx.CursorObservable;
 import ru.arturvasilov.sqlite.table.Table;
@@ -69,7 +69,7 @@ public class QueryListImpl<T> implements QueryList<T> {
     @Override
     public Observable<List<T>> asObservable() {
         //noinspection unchecked
-        return new CursorObservable(mContext, mTable.getUri(), null, mQuery, mQueryArgs, null)
+        return CursorObservable.create(mContext, mTable.getUri(), null, mQuery, mQueryArgs, null)
                 .map(new CursorListMapper(new Func1<Cursor, T>() {
                     @Override
                     public T call(Cursor cursor) {

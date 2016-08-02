@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.arturvasilov.sqlite.SQLiteUtils;
+import ru.arturvasilov.sqlite.core.SQLiteUtils;
 import rx.functions.Func1;
 
 /**

@@ -1,4 +1,4 @@
-package ru.arturvasilov.sqlite.utils;
+package ru.arturvasilov.sqlite.testutils;
 
 import android.content.pm.ProviderInfo;
 import android.support.annotation.NonNull;
@@ -18,12 +18,13 @@ import ru.arturvasilov.sqlite.table.Table;
  */
 public final class SQLiteEnv {
 
-    public static final String AUTHORITY = "ru.arturvasilov.database";
-    public static final String NAME = "test_db_name";
+    private static final String AUTHORITY = "ru.arturvasilov.database";
+    private static final String NAME = "test_db_name";
 
     private SQLiteEnv() {
     }
 
+    @NonNull
     public static SQLiteContentProvider registerProvider(@NonNull final List<Table> tables) {
         SQLiteContentProvider provider = new SQLiteContentProvider() {
             @Override
@@ -43,7 +44,7 @@ public final class SQLiteEnv {
         return provider;
     }
 
-    public static void registerProvider(@NonNull SQLiteContentProvider provider) {
+    private static void registerProvider(@NonNull SQLiteContentProvider provider) {
         final ProviderInfo providerInfo = new ProviderInfo();
         providerInfo.name = NAME;
         providerInfo.authority = AUTHORITY;

@@ -11,7 +11,7 @@ import java.util.List;
 import ru.arturvasilov.sqlite.core.SQLiteConfig;
 import ru.arturvasilov.sqlite.core.SQLiteContentProvider;
 import ru.arturvasilov.sqlite.core.Schema;
-import ru.arturvasilov.sqlite.table.Table;
+import ru.arturvasilov.sqlite.core.Table;
 
 /**
  * @author Artur Vasilov

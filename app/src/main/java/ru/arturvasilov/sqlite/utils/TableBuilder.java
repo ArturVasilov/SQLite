@@ -1,4 +1,4 @@
-package ru.arturvasilov.sqlite.table;
+package ru.arturvasilov.sqlite.utils;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import ru.arturvasilov.sqlite.core.Table;
 
 /**
  * @author Artur Vasilov

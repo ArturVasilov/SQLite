@@ -1,4 +1,4 @@
-package ru.arturvasilov.sqlite.table;
+package ru.arturvasilov.sqlite.utils;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -9,6 +9,7 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 
 import ru.arturvasilov.sqlite.testutils.TestTable;
+import ru.arturvasilov.sqlite.utils.TableBuilder;
 
 import static org.mockito.Matchers.anyString;
 

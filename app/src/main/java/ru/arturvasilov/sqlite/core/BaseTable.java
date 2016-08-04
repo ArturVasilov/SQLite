@@ -1,10 +1,8 @@
-package ru.arturvasilov.sqlite.table;
+package ru.arturvasilov.sqlite.core;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-
-import ru.arturvasilov.sqlite.core.SQLiteContentProvider;
 
 /**
  * @author Artur Vasilov

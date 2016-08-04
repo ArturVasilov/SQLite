@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 
+import ru.arturvasilov.sqlite.utils.SQLiteUtils;
+
 /**
  * @author Artur Vasilov
  */

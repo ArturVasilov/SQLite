@@ -5,50 +5,44 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-import ru.arturvasilov.sqlite.table.BaseTable;
-import ru.arturvasilov.sqlite.table.Table;
-import ru.arturvasilov.sqlite.table.TableBuilder;
+import ru.arturvasilov.sqlite.core.BaseTable;
+import ru.arturvasilov.sqlite.core.Table;
+import ru.arturvasilov.sqlite.utils.TableBuilder;
 
 /**
  * @author Artur Vasilov
  */
-public class TestTable extends BaseTable<TestContentClass> {
+public class TestTable extends BaseTable<TestObject> {
 
-    public static final Table<TestContentClass> TABLE = new TestTable();
+    public static final Table<TestObject> TABLE = new TestTable();
+
+    public static final String ID = "id";
+    public static final String TEXT = "text";
 
     @Override
     public void onCreate(@NonNull SQLiteDatabase database) {
         TableBuilder.create(this)
-                .intColumn(Columns.ID)
-                .stringColumn(Columns.TEXT)
-                .primaryKey(Columns.ID)
+                .intColumn(ID)
+                .stringColumn(TEXT)
+                .primaryKey(ID)
                 .execute(database);
-    }
-
-    @Override
-    public int getLastUpgradeVersion() {
-        return 1;
     }
 
     @NonNull
     @Override
-    public ContentValues toValues(@NonNull TestContentClass object) {
+    public ContentValues toValues(@NonNull TestObject object) {
         ContentValues values = new ContentValues();
-        values.put(Columns.ID, object.getId());
-        values.put(Columns.TEXT, object.getText());
+        values.put(ID, object.getId());
+        values.put(TEXT, object.getText());
         return values;
     }
 
     @NonNull
     @Override
-    public TestContentClass fromCursor(@NonNull Cursor cursor) {
-        int id = cursor.getInt(cursor.getColumnIndex(Columns.ID));
-        String text = cursor.getString(cursor.getColumnIndex(Columns.TEXT));
-        return new TestContentClass(id, text);
+    public TestObject fromCursor(@NonNull Cursor cursor) {
+        int id = cursor.getInt(cursor.getColumnIndex(ID));
+        String text = cursor.getString(cursor.getColumnIndex(TEXT));
+        return new TestObject(id, text);
     }
 
-    public interface Columns {
-        String ID = "id";
-        String TEXT = "text";
-    }
 }

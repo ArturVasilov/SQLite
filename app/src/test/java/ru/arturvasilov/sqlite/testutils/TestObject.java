@@ -5,12 +5,12 @@ import android.support.annotation.NonNull;
 /**
  * @author Artur Vasilov
  */
-public class TestContentClass {
+public class TestObject {
 
     private final int mId;
     private String mText;
 
-    public TestContentClass(int id, @NonNull String text) {
+    public TestObject(int id, @NonNull String text) {
         mId = id;
         mText = text;
     }
@@ -33,7 +33,7 @@ public class TestContentClass {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        TestContentClass that = (TestContentClass) o;
+        TestObject that = (TestObject) o;
 
         return getId() == that.getId() && getText().equals(that.getText());
 

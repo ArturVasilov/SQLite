@@ -1,4 +1,4 @@
-package ru.arturvasilov.sqlite.table;
+package ru.arturvasilov.sqlite.core;
 
 import android.content.ContentValues;
 import android.database.Cursor;

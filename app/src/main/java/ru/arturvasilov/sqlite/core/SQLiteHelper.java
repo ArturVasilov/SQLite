@@ -5,8 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 
-import ru.arturvasilov.sqlite.table.Table;
-
 /**
  * @author Artur Vasilov
  */

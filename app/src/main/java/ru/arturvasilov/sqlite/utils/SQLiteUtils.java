@@ -1,8 +1,10 @@
-package ru.arturvasilov.sqlite.core;
+package ru.arturvasilov.sqlite.utils;
 
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import ru.arturvasilov.sqlite.core.SQLite;
 
 /**
  * @author Artur Vasilov
@@ -10,6 +12,10 @@ import android.support.annotation.Nullable;
 public class SQLiteUtils {
 
     private SQLiteUtils() {
+    }
+
+    public static void assertInitialized() throws IllegalStateException {
+        SQLite.get();
     }
 
     public static boolean isEmptyCursor(@Nullable Cursor cursor) {

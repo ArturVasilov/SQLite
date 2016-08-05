@@ -1,0 +1,20 @@
+language: android
+
+jdk:
+  - oraclejdk8
+
+sudo: false
+
+android:
+  components:
+    - tools
+    - build-tools-24.0.1
+    - android-23
+    - extra-android-support
+    - extra-android-m2repository
+
+script:
+  - ./gradlew clean :app:testDebugUnitTest
+
+notifications:
+email: false

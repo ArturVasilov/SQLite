@@ -26,6 +26,9 @@ android {
         unitTests {
             all {
                 jvmArgs '-noverify'
+				jacoco {
+					includeNoLocationClasses = true
+				}
             }
         }
     }

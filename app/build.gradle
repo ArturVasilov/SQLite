@@ -45,4 +45,5 @@ dependencies {
     testCompile 'org.mockito:mockito-core:2.0.2-beta'
 }
 
+apply from: 'jacoco.gradle'
 apply from: 'https://raw.githubusercontent.com/blundell/release-android-library/master/android-release-aar.gradle'

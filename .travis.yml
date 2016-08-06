@@ -21,10 +21,7 @@ android:
     - extra-android-m2repository
 
 script:
-  bash gradlew test jacocoUnitTestReport
-  
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - ./gradlew clean :app:testDebugUnitTest :app:jacocoTestReport :app:coveralls
 
 notifications:
 email: false

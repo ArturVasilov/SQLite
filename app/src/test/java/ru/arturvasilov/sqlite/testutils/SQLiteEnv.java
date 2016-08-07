@@ -10,7 +10,7 @@ import java.util.List;
 
 import ru.arturvasilov.sqlite.core.SQLiteConfig;
 import ru.arturvasilov.sqlite.core.SQLiteContentProvider;
-import ru.arturvasilov.sqlite.core.Schema;
+import ru.arturvasilov.sqlite.core.SQLiteSchema;
 import ru.arturvasilov.sqlite.core.Table;
 
 /**
@@ -24,8 +24,7 @@ public final class SQLiteEnv {
     private SQLiteEnv() {
     }
 
-    @NonNull
-    public static SQLiteContentProvider registerProvider(@NonNull final List<Table> tables) {
+    public static void registerProvider(@NonNull final List<Table> tables) {
         SQLiteContentProvider provider = new SQLiteContentProvider() {
             @Override
             protected void prepareConfig(@NonNull SQLiteConfig config) {
@@ -34,14 +33,13 @@ public final class SQLiteEnv {
             }
 
             @Override
-            protected void prepareSchema(@NonNull Schema schema) {
+            protected void prepareSchema(@NonNull SQLiteSchema schema) {
                 for (Table table : tables) {
                     schema.register(table);
                 }
             }
         };
         registerProvider(provider);
-        return provider;
     }
 
     private static void registerProvider(@NonNull SQLiteContentProvider provider) {

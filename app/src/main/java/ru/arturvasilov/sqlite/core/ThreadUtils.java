@@ -1,4 +1,4 @@
-package ru.arturvasilov.sqlite.utils;
+package ru.arturvasilov.sqlite.core;
 
 import android.support.annotation.NonNull;
 
@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Artur Vasilov
  */
-public final class ThreadUtils {
+final class ThreadUtils {
 
     private static final long RETRY_DELAY = 100;
     private static final int POOL_SIZE = 2;
@@ -38,7 +38,7 @@ public final class ThreadUtils {
             new LinkedBlockingQueue<Runnable>(POOL_SIZE),
             REJECTED_EXECUTION_HANDLER);
 
-    public static void runInBackground(@NonNull final Runnable runnable) {
+    static void runInBackground(@NonNull final Runnable runnable) {
         THREAD_POOL_EXECUTOR.execute(runnable);
     }
 }

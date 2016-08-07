@@ -48,7 +48,7 @@ public class SQLiteTest {
     public void testInsertElement() throws Exception {
         TestObject test = new TestObject(5, "aaaa");
         SQLite.get().insert(TestTable.TABLE, test);
-        TestObject saved = SQLite.get().queryObject(TestTable.TABLE, Where.create());
+        TestObject saved = SQLite.get().querySingle(TestTable.TABLE);
         assertEquals(test, saved);
     }
 
@@ -62,7 +62,7 @@ public class SQLiteTest {
         elements.add(new TestObject(5, "abcde"));
         SQLite.get().insert(TestTable.TABLE, elements);
 
-        int savedSize = SQLite.get().query(TestTable.TABLE, Where.create()).size();
+        int savedSize = SQLite.get().query(TestTable.TABLE).size();
         assertEquals(elements.size(), savedSize);
     }
 
@@ -74,7 +74,7 @@ public class SQLiteTest {
         SQLite.get().insert(TestTable.TABLE, elements);
 
         SQLite.get().insert(TestTable.TABLE, new TestObject(12, "bc"));
-        List<TestObject> savedElements = SQLite.get().query(TestTable.TABLE, Where.create());
+        List<TestObject> savedElements = SQLite.get().query(TestTable.TABLE);
         assertEquals(elements.size(), savedElements.size());
         assertEquals("bc", savedElements.get(1).getText());
     }
@@ -86,7 +86,7 @@ public class SQLiteTest {
         elements.add(new TestObject(12, "ab"));
         SQLite.get().insert(TestTable.TABLE, elements);
 
-        TestObject element = SQLite.get().queryObject(TestTable.TABLE, Where.create()
+        TestObject element = SQLite.get().querySingle(TestTable.TABLE, Where.create()
                 .where(TestTable.ID + "=?")
                 .whereArgs(new String[]{"12"}));
         assertEquals(elements.get(1), element);
@@ -113,13 +113,13 @@ public class SQLiteTest {
 
     @Test
     public void testEmptyElement() throws Exception {
-        TestObject element = SQLite.get().queryObject(TestTable.TABLE, Where.create());
+        TestObject element = SQLite.get().querySingle(TestTable.TABLE);
         assertNull(element);
     }
 
     @Test
     public void testEmptyList() throws Exception {
-        List<TestObject> elements = SQLite.get().query(TestTable.TABLE, Where.create());
+        List<TestObject> elements = SQLite.get().query(TestTable.TABLE);
         assertTrue(elements.isEmpty());
     }
 
@@ -134,7 +134,7 @@ public class SQLiteTest {
                 .whereArgs(new String[]{"123321"}), update);
         assertEquals(1, count);
 
-        TestObject updated = SQLite.get().queryObject(TestTable.TABLE, Where.create());
+        TestObject updated = SQLite.get().querySingle(TestTable.TABLE);
         assertEquals(update, updated);
     }
 
@@ -149,7 +149,7 @@ public class SQLiteTest {
                 .whereArgs(new String[]{"1233212"}), update);
         assertEquals(0, count);
 
-        TestObject notUpdated = SQLite.get().queryObject(TestTable.TABLE, Where.create());
+        TestObject notUpdated = SQLite.get().querySingle(TestTable.TABLE);
         assertEquals(element, notUpdated);
     }
 
@@ -160,10 +160,10 @@ public class SQLiteTest {
         elements.add(new TestObject(12, "ab"));
         SQLite.get().insert(TestTable.TABLE, elements);
 
-        int count = SQLite.get().delete(TestTable.TABLE, Where.create());
+        int count = SQLite.get().delete(TestTable.TABLE);
         assertEquals(2, count);
 
-        elements = SQLite.get().query(TestTable.TABLE, Where.create());
+        elements = SQLite.get().query(TestTable.TABLE);
         assertTrue(elements.isEmpty());
     }
 
@@ -182,7 +182,7 @@ public class SQLiteTest {
                 .whereArgs(new String[]{"ab"}));
         assertEquals(2, count);
 
-        List<TestObject> leftElements = SQLite.get().query(TestTable.TABLE, Where.create());
+        List<TestObject> leftElements = SQLite.get().query(TestTable.TABLE);
 
         assertEquals(3, leftElements.size());
         assertEquals(elements.get(0), leftElements.get(0));
@@ -195,7 +195,7 @@ public class SQLiteTest {
         TestObject test = new TestObject(1, "aaaa");
         SQLite.get().insert(TestTable.TABLE, test);
 
-        List<TestObject> all = SQLite.get().query(TestTable.TABLE, Where.create());
+        List<TestObject> all = SQLite.get().query(TestTable.TABLE);
         assertEquals(1, all.size());
         assertTrue(test.equals(all.get(0)));
 
@@ -205,14 +205,14 @@ public class SQLiteTest {
                         .where("id=?")
                         .whereArgs(new String[]{"1"}), test);
 
-        all = SQLite.get().query(TestTable.TABLE, Where.create());
+        all = SQLite.get().query(TestTable.TABLE);
         assertEquals(1, rows);
         assertEquals(1, all.size());
         assertTrue(test.equals(all.get(0)));
 
-        SQLite.get().delete(TestTable.TABLE, Where.create());
+        SQLite.get().delete(TestTable.TABLE);
 
-        assertTrue(SQLite.get().query(TestTable.TABLE, Where.create()).isEmpty());
+        assertTrue(SQLite.get().query(TestTable.TABLE).isEmpty());
     }
 
     @Test
@@ -222,7 +222,7 @@ public class SQLiteTest {
         SQLite.get().registerObserver(TestTable.TABLE, observer);
 
         SQLite.get().insert(TestTable.TABLE, new TestObject(5, "text"));
-        SQLite.get().delete(TestTable.TABLE, Where.create());
+        SQLite.get().delete(TestTable.TABLE);
 
         Mockito.verify(observer, times(2)).onTableChanged();
 
@@ -248,6 +248,6 @@ public class SQLiteTest {
 
     @After
     public void tearDown() throws Exception {
-        SQLite.get().delete(TestTable.TABLE, Where.create());
+        SQLite.get().delete(TestTable.TABLE);
     }
 }

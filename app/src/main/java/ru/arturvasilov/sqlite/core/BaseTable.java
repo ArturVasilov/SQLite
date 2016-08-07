@@ -27,10 +27,8 @@ public abstract class BaseTable<T> implements Table<T> {
     }
 
     @Override
-    public void onUpgrade(@NonNull SQLiteDatabase database, int oldVersion, int newVersion) {
-        if (newVersion <= getLastUpgradeVersion() && newVersion > oldVersion) {
-            database.execSQL("DROP TABLE IF EXISTS " + getTableName());
-            onCreate(database);
-        }
+    public void onUpgrade(@NonNull SQLiteDatabase database) {
+        database.execSQL("DROP TABLE IF EXISTS " + getTableName());
+        onCreate(database);
     }
 }

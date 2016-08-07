@@ -1,12 +1,11 @@
 package ru.arturvasilov.sqlite.utils;
 
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import ru.arturvasilov.sqlite.core.SQLite;
-
 /**
+ * Utility class for safe methods to work with database.
+ *
  * @author Artur Vasilov
  */
 public class SQLiteUtils {
@@ -14,10 +13,12 @@ public class SQLiteUtils {
     private SQLiteUtils() {
     }
 
-    public static void assertInitialized() throws IllegalStateException {
-        SQLite.get();
-    }
-
+    /**
+     * Method to test if any rows in cursor exists. It's safe, you can pass null cursor or closed, e.g.
+     *
+     * @param cursor - cursor you want to check if it's empty
+     * @return - true if cursor is null, closed or empty or false in other cases
+     */
     public static boolean isEmptyCursor(@Nullable Cursor cursor) {
         if (cursor == null) {
             return true;
@@ -31,6 +32,12 @@ public class SQLiteUtils {
         return !cursor.moveToFirst();
     }
 
+    /**
+     * Closing cursor was always the hell (since you have to check if it's null or closed and so on,
+     * but this method handles all the cases and safely closes the cursor.
+     *
+     * @param cursor - cursor you want to close
+     */
     public static void safeCloseCursor(@Nullable Cursor cursor) {
         if (cursor == null || cursor.isClosed()) {
             return;
@@ -40,15 +47,5 @@ public class SQLiteUtils {
             cursor.close();
         } catch (Exception ignored) {
         }
-    }
-
-    @NonNull
-    public static String defaultDatabaseName() {
-        return "ru.sqlite.database.database";
-    }
-
-    @NonNull
-    public static String defaultUri() {
-        return "ru.sqlite.database";
     }
 }

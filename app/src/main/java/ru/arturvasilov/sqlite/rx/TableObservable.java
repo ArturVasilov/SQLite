@@ -5,34 +5,47 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import ru.arturvasilov.sqlite.core.Table;
-import ru.arturvasilov.sqlite.core.Where;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.Subscriber;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
+ * Class which allows you to observe changes in {@link Table} in reactive way
+ * <p/>
+ * Simple call of {@link RxSQLite#observeChanges(Table)} will return you an instance of this observable,
+ * and you can any operations with this observable.
+ * <p/>
+ * For this Observable {@link rx.Subscriber#onNext(Object)} called each time when table changes
+ * and {@link Subscriber#onCompleted()} is never called.
+ * <p/>
+ * This observable add {@link TableObservable#withQuery()} method to allow you query all rows from the observed tabled.
+ *
  * @author Artur Vasilov
  */
-public class TableObservable<T> extends Observable<Boolean> {
+class TableObservable<T> extends Observable<Void> {
 
     private final Table<T> mTable;
 
-    public TableObservable(@NonNull OnSubscribe<Boolean> f, @NonNull Table<T> table) {
+    TableObservable(@NonNull OnSubscribe<Void> f, @NonNull Table<T> table) {
         super(f);
         mTable = table;
     }
 
+    /**
+     * This method transforms notifications observable to the observable with list of all objects in the table.
+     * It also works in the background.
+     *
+     * @return observable with all elements from the table
+     */
     @NonNull
     public Observable<List<T>> withQuery() {
-        return flatMap(new Func1<Boolean, Observable<List<T>>>() {
+        return flatMap(new Func1<Void, Observable<List<T>>>() {
             @Override
-            public Observable<List<T>> call(Boolean value) {
-                return RxSQLite.get().query(mTable, Where.create());
+            public Observable<List<T>> call(Void value) {
+                return RxSQLite.get().query(mTable);
             }
         })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-
+                .subscribeOn(Schedulers.io());
     }
 }

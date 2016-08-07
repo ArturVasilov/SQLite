@@ -30,10 +30,10 @@ public class TestTable extends BaseTable<TestObject> {
 
     @NonNull
     @Override
-    public ContentValues toValues(@NonNull TestObject object) {
+    public ContentValues toValues(@NonNull TestObject testObject) {
         ContentValues values = new ContentValues();
-        values.put(ID, object.getId());
-        values.put(TEXT, object.getText());
+        values.put(ID, testObject.getId());
+        values.put(TEXT, testObject.getText());
         return values;
     }
 

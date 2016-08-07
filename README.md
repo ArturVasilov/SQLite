@@ -138,7 +138,7 @@ And it's all the same for other operations.
 
 ### Observing changes
 
-Observing changes in database is a great way for comunication between your UI classes and network layer. This library provides flexible implementation of this pattern.
+Observing changes in database is a great way for communication between your UI classes and network layer. This library provides flexible implementation of this pattern.
 
 Get notified when table changed:
 ```java
@@ -173,7 +173,7 @@ public void onTableChanged(@NonNull List<Person> persons) {
     // handle changed persons
 }
 ```
-Everything else is the same! And more, you don't need to care about perfomance, for these changes library reads queries tables in the background already. *Note*: that's why you should be careful using this type of subscribption - frequent changes in table may affect your app.
+Everything else is the same! And more, you don't need to care about performance, for these changes library reads queries tables in the background already. *Note*: that's why you should be careful using this type of subscribption - frequent changes in table may affect your app.
 
 It's even more flexible with RxSQLite:
 ```java
@@ -206,7 +206,7 @@ mPersonsSubscription = RxSQLite.get().observeChanges(PersonTable.TABLE).withQuer
 
 ### Data migration
 
-Data migration is always is most paintful part. Library provides you a way to update the table and decide how it should be updated.
+Data migration is always is most painful part. Library provides you a way to update the table and decide how it should be updated.
 
 Each table has method ```getLastUpgradeVersion```, which by default returns 1. Current database version is the maximum of all tables versions. 
 

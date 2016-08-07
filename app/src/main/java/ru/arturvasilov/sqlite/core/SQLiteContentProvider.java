@@ -12,30 +12,47 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 /**
+ * This class provides implementation for all operations in ContentProvider
+ * and based on SQLite database.
+ *
+ * You only have to implement two methods {@link SQLiteContentProvider#prepareConfig(SQLiteConfig)}
+ * and {@link SQLiteContentProvider#prepareSchema(SQLiteSchema)}, the rest is handled by the library.
+ *
  * @author Artur Vasilov
  */
 public abstract class SQLiteContentProvider extends ContentProvider {
 
-    private Schema mSchema;
+    private SQLiteSchema mSchema;
 
     private SQLiteOpenHelper mSQLiteHelper;
 
     private static String sContentAuthority;
     private static Uri sBaseUri;
 
+    /**
+     * In this method you can specify configuration for your database (for this moment only name and authority)
+     *
+     * @param config - configuration for SQLite database
+     */
     protected abstract void prepareConfig(@NonNull SQLiteConfig config);
 
-    protected abstract void prepareSchema(@NonNull Schema schema);
+    /**
+     * In this method you must add all tables you want to use in your app.
+     * To add table call {@link SQLiteSchema#register(Table)}
+     *
+     * @param schema - schema for SQLite database
+     */
+    protected abstract void prepareSchema(@NonNull SQLiteSchema schema);
 
     @Override
-    public boolean onCreate() {
+    public final boolean onCreate() {
         SQLiteConfig config = new SQLiteConfig(getContext());
         prepareConfig(config);
 
         sContentAuthority = config.getAuthority();
         sBaseUri = Uri.parse("content://" + sContentAuthority);
 
-        mSchema = new Schema();
+        mSchema = new SQLiteSchema();
         prepareSchema(mSchema);
 
         mSQLiteHelper = new SQLiteHelper(getContext(), config, mSchema);
@@ -44,13 +61,13 @@ public abstract class SQLiteContentProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public String getType(@NonNull Uri uri) {
+    public final String getType(@NonNull Uri uri) {
         return mSchema.findTable(uri);
     }
 
     @Nullable
     @Override
-    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public final Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteDatabase database = mSQLiteHelper.getWritableDatabase();
         String table = getType(uri);
         if (TextUtils.isEmpty(table)) {
@@ -68,7 +85,7 @@ public abstract class SQLiteContentProvider extends ContentProvider {
 
     @NonNull
     @Override
-    public Uri insert(@NonNull Uri uri, ContentValues values) {
+    public final Uri insert(@NonNull Uri uri, ContentValues values) {
         SQLiteDatabase database = mSQLiteHelper.getWritableDatabase();
         String table = getType(uri);
         if (TextUtils.isEmpty(table)) {
@@ -80,7 +97,7 @@ public abstract class SQLiteContentProvider extends ContentProvider {
     }
 
     @Override
-    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+    public final int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         SQLiteDatabase database = mSQLiteHelper.getWritableDatabase();
         String table = getType(uri);
         if (TextUtils.isEmpty(table)) {
@@ -104,7 +121,7 @@ public abstract class SQLiteContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
+    public final int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase database = mSQLiteHelper.getWritableDatabase();
         String table = getType(uri);
         if (TextUtils.isEmpty(table)) {
@@ -115,7 +132,7 @@ public abstract class SQLiteContentProvider extends ContentProvider {
     }
 
     @Override
-    public int update(@NonNull Uri uri, ContentValues values,
+    public final int update(@NonNull Uri uri, ContentValues values,
                       String selection, String[] selectionArgs) {
         SQLiteDatabase database = mSQLiteHelper.getWritableDatabase();
         String table = getType(uri);
@@ -127,12 +144,12 @@ public abstract class SQLiteContentProvider extends ContentProvider {
     }
 
     @NonNull
-    public static String getContentAuthority() {
+    static String getContentAuthority() {
         return sContentAuthority;
     }
 
     @NonNull
-    public static Uri getBaseUri() {
+    static Uri getBaseUri() {
         return sBaseUri;
     }
 }

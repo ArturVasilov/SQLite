@@ -33,7 +33,7 @@ public class SQLiteUtilsTest {
         when(context.getApplicationContext()).thenReturn(appContext);
         SQLite.initialize(context);
 
-        SQLiteUtils.assertInitialized();
+        SQLite.get();
     }
 
     @Test

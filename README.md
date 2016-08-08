@@ -1,4 +1,4 @@
-# SQLite [![Apache License](https://img.shields.io/badge/license-Apache%20v2-blue.svg)](https://github.com/ArturVasilov/SQLite/blob/master/LICENSE) [![Build Status](https://travis-ci.org/ArturVasilov/SQLite.png?branch=master)](https://github.com/ArturVasilov/SQLite) [![Coverage Status](https://coveralls.io/repos/github/ArturVasilov/SQLite/badge.svg)](https://coveralls.io/github/ArturVasilov/SQLite)
+# SQLite [![Apache License](https://img.shields.io/badge/license-Apache%20v2-blue.svg)](https://github.com/ArturVasilov/SQLite/blob/master/LICENSE) [![Build Status](https://travis-ci.org/ArturVasilov/SQLite.png?branch=master)](https://github.com/ArturVasilov/SQLite) [![Coverage Status](https://coveralls.io/repos/github/ArturVasilov/SQLite/badge.svg#1)](https://coveralls.io/github/ArturVasilov/SQLite)
 
 #### Yet another Android library for database
 

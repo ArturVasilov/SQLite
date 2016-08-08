@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -219,9 +220,9 @@ public class SQLiteTest {
         Mockito.verifyNoMoreInteractions(observer);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChangeWithData() throws Exception {
-        //noinspection unchecked
         ContentTableObserver<TestObject> observer = Mockito.mock(ContentTableObserver.class);
         Mockito.doNothing().when(observer).onTableChanged(anyListOf(TestObject.class));
         SQLite.get().registerObserver(TestTable.TABLE, observer);
@@ -230,7 +231,28 @@ public class SQLiteTest {
         Thread.sleep(100); //data will be queried asynchronously
         Mockito.verify(observer).onTableChanged(anyListOf(TestObject.class));
 
+        Mockito.reset(observer);
         SQLite.get().unregisterObserver(observer);
+        SQLite.get().delete(TestTable.TABLE);
+        Mockito.verifyNoMoreInteractions(observer);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testObserveTableChangeWithDataAndQuery() throws Exception {
+        ContentTableObserver<TestObject> observer = Mockito.mock(ContentTableObserver.class);
+        Mockito.doNothing().when(observer).onTableChanged(anyListOf(TestObject.class));
+        SQLite.get().registerObserver(TestTable.TABLE, observer, Where.create().equalTo(TestTable.ID, 5));
+
+        List<TestObject> list = new ArrayList<>();
+        list.add(new TestObject(5, 9.7, "text"));
+        list.add(new TestObject(6, 8, "text2"));
+        SQLite.get().insert(TestTable.TABLE, list);
+        Thread.sleep(100); //data will be queried asynchronously
+
+        ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
+        Mockito.verify(observer).onTableChanged(captor.capture());
+        assertEquals(1, captor.getValue().size());
     }
 
     @After

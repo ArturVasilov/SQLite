@@ -46,6 +46,7 @@ dependencies {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
     testCompile 'org.mockito:mockito-core:2.0.2-beta'
+    testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
 }
 
 apply from: 'jacoco.gradle'

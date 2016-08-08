@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
@@ -50,6 +51,8 @@ public class RxSQLiteTest {
         Application application = RuntimeEnvironment.application;
         application.onCreate();
         SQLite.initialize(application);
+
+        RxUtils.setupTestSchedulers();
     }
 
     @Test
@@ -205,11 +208,9 @@ public class RxSQLiteTest {
         Mockito.verifyNoMoreInteractions(action);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChangeWithData() throws Exception {
-        RxUtils.setupTestSchedulers();
-
-        //noinspection unchecked
         Action1<List<TestObject>> action = Mockito.mock(Action1.class);
         Mockito.doNothing().when(action).call(anyListOf(TestObject.class));
         Subscription subscription = RxSQLite.get().observeChanges(TestTable.TABLE).withQuery().subscribe(action);
@@ -217,7 +218,6 @@ public class RxSQLiteTest {
         SQLite.get().insert(TestTable.TABLE, new TestObject(10410, 8.9, "ca'pcj;s;vhjvksf;bgd"));
         Mockito.verify(action).call(anyListOf(TestObject.class));
 
-        //noinspection unchecked
         Mockito.reset(action);
         subscription.unsubscribe();
 
@@ -225,6 +225,25 @@ public class RxSQLiteTest {
         Mockito.verifyNoMoreInteractions(action);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testObserveTableChangeWithDataAndQuery() throws Exception {
+        Action1<List<TestObject>> action = Mockito.mock(Action1.class);
+        Mockito.doNothing().when(action).call(anyListOf(TestObject.class));
+        RxSQLite.get().observeChanges(TestTable.TABLE)
+                .withQuery(Where.create().lessThan(TestTable.RATING, 5))
+                .subscribe(action);
+
+        List<TestObject> list = new ArrayList<>();
+        list.add(new TestObject(513, 1.6, "text44"));
+        list.add(new TestObject(8, 7.6, "text2"));
+        list.add(new TestObject(9, 4, "tex7"));
+        SQLite.get().insert(TestTable.TABLE, list);
+
+        ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
+        Mockito.verify(action).call(captor.capture());
+        assertEquals(2, captor.getValue().size());
+    }
 
     @After
     public void tearDown() throws Exception {

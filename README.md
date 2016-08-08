@@ -131,7 +131,7 @@ List<Person> adults = SQLite.get().query(PersonTable.TABLE, Where.create().great
 Similar way for RxSQLite:
 
 ```java
-RxSQLite.get().query(PersonTable.TABLE, Where.create())
+RxSQLite.get().query(PersonTable.TABLE)
         .subscribe(persons -> {
             //do something with persons
         });

@@ -29,7 +29,7 @@ final class Observers {
     }
 
     public <T> void registerObserver(@NonNull Context context, @NonNull final Table<T> table,
-                                     @NonNull final ContentTableObserver<T> observer) {
+                                     @NonNull final ContentTableObserver<T> observer, @NonNull final Where where) {
         ContentObserver contentObserver = new DatabaseObserver() {
             @Override
             public void onChange(boolean selfChange) {
@@ -37,7 +37,7 @@ final class Observers {
                 ThreadUtils.runInBackground(new Runnable() {
                     @Override
                     public void run() {
-                        List<T> elements = SQLite.get().query(table, Where.create());
+                        List<T> elements = SQLite.get().query(table, where);
                         observer.onTableChanged(elements);
                     }
                 });

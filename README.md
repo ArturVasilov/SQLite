@@ -15,7 +15,7 @@ Database library for Android based on SQLite and ContentProvider, which provides
 ### Gradle
 
 ```groovy
-compile 'ru.arturvasilov:sqlite:0.1.0'
+compile 'ru.arturvasilov:sqlite:0.1.1'
 ```
 
 ### Tables:
@@ -105,6 +105,14 @@ public class MyApplication extends Application {
     }
 }
 ```
+
+### Supported data types
+
+1. _int_, _short_ and _long_ are supported with intColumn method
+2. _boolean_ is also supported with ```intColumn``` method, but you still have to manually convert it in ```Table#toValues``` and ```Table#fromCursor``` methods
+3. _double_ and _float_ are supported with ```realColumn```.
+4. String, enums and custom objects should be saved as TEXT with ```textColumn``` method. For custom objects you may consider json serialization (relations is not in the nearest plan).
+
 
 ### Operations
 

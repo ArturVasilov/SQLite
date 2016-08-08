@@ -2,12 +2,12 @@
 
 #### Yet another Android library for database
 
-Extremely simple database library for Android based on SQLite and ContentProvider, which provides simple way to all operations with data. 
+Database library for Android based on SQLite and ContentProvider, which provides simple way for all operations with data.
 
 ### Advantages:
 
 * 0 reflection
-* Full customization (since library is a simple wrapper on ContentProvider you can always access to it)
+* Full customization (since library is a simple wrapper on ContentProvider you can always have direct access to it)
 * Flexible interface for manipulating data
 * Data migration
 * RxJava support
@@ -22,7 +22,7 @@ compile 'ru.arturvasilov:sqlite:0.1.0'
 
 Instead of generating code and using your model classes for database directly, this library uses tables classes for each table in database (or in fact for each class you want to store). It's routine to write these classes but it also give you more control, which is useful for features like data migration.
 
-So, create your classes and for each table you want create class for this table:
+So for each table in database you have to create a class which extends ```Table``` interface or ```BaseTable``` class like this:
 
 ```java
 public class PersonTable extends BaseTable<Person> {
@@ -221,11 +221,9 @@ public int getLastUpgradeVersion() {
 By default, *onUpdate* method simply recreates the table, but you can customize it by overriding this method:
 ```java
 @Override
-public void onUpgrade(@NonNull SQLiteDatabase database, int oldVersion, int newVersion) {
-    if (newVersion <= getLastUpgradeVersion() && newVersion > oldVersion) {
-        database.execSQL("DROP TABLE IF EXISTS " + getTableName());
-        onCreate(database);
-    }
+public void onUpgrade(@NonNull SQLiteDatabase database) {
+    database.execSQL("DROP TABLE IF EXISTS " + getTableName());
+    onCreate(database);
 }
 ```
 

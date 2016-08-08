@@ -4,7 +4,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import ru.arturvasilov.sqlite.core.Table;
@@ -17,12 +16,14 @@ public final class TableBuilder {
     private String mTableName;
     private final List<String> mPrimaryKeys;
     private final List<String> mIntegerColumns;
-    private final List<String> mStringColumns;
+    private final List<String> mRealColumns;
+    private final List<String> mTextColumns;
 
     private TableBuilder() {
-        mIntegerColumns = new ArrayList<>();
-        mStringColumns = new ArrayList<>();
         mPrimaryKeys = new ArrayList<>();
+        mIntegerColumns = new ArrayList<>();
+        mRealColumns = new ArrayList<>();
+        mTextColumns = new ArrayList<>();
     }
 
     @NonNull
@@ -35,44 +36,59 @@ public final class TableBuilder {
     @NonNull
     public TableBuilder primaryKey(@NonNull String... keys) {
         mPrimaryKeys.clear();
-        Collections.addAll(mPrimaryKeys, keys);
+        for (String key : keys) {
+            if (!mPrimaryKeys.contains(key)) {
+                mPrimaryKeys.add(key);
+            }
+        }
         return this;
     }
 
     @NonNull
     public TableBuilder intColumn(@NonNull String columnName) {
-        mIntegerColumns.add(columnName);
+        if (!mIntegerColumns.contains(columnName)) {
+            mIntegerColumns.add(columnName);
+        }
         return this;
     }
 
     @NonNull
-    public TableBuilder stringColumn(@NonNull String columnName) {
-        mStringColumns.add(columnName);
+    public TableBuilder realColumn(@NonNull String columnName) {
+        if (!mRealColumns.contains(columnName)) {
+            mRealColumns.add(columnName);
+        }
+        return this;
+    }
+
+    @NonNull
+    public TableBuilder textColumn(@NonNull String columnName) {
+        if (!mTextColumns.contains(columnName)) {
+            mTextColumns.add(columnName);
+        }
         return this;
     }
 
     public void execute(@NonNull SQLiteDatabase database) {
+        if (mIntegerColumns.isEmpty() && mRealColumns.isEmpty() && mTextColumns.isEmpty()) {
+            throw new IllegalStateException("Cannot create table with no columns");
+        }
+
         StringBuilder builder = new StringBuilder();
         builder.append("CREATE TABLE IF NOT EXISTS ")
                 .append(mTableName)
                 .append("(");
 
-        if (mStringColumns.isEmpty() && mIntegerColumns.isEmpty()) {
-            throw new IllegalStateException("No columns present");
-        }
-        if (mIntegerColumns.isEmpty()) {
-            String column = mStringColumns.remove(0);
-            builder.append(column)
-                    .append(" TEXT");
-        } else {
+        if (!mIntegerColumns.isEmpty()) {
             String column = mIntegerColumns.remove(0);
             builder.append(column)
                     .append(" INTEGER");
-        }
-
-        for (String column : mStringColumns) {
-            builder.append(", ")
-                    .append(column)
+        } else if (!mRealColumns.isEmpty()) {
+            String column = mRealColumns.remove(0);
+            builder.append(column)
+                    .append(" REAL");
+        } else {
+            String column = mTextColumns.remove(0);
+            builder.append(column)
                     .append(" TEXT");
         }
 
@@ -80,6 +96,18 @@ public final class TableBuilder {
             builder.append(", ")
                     .append(column)
                     .append(" INTEGER");
+        }
+
+        for (String column : mRealColumns) {
+            builder.append(", ")
+                    .append(column)
+                    .append(" REAL");
+        }
+
+        for (String column : mTextColumns) {
+            builder.append(", ")
+                    .append(column)
+                    .append(" TEXT");
         }
 
         if (!mPrimaryKeys.isEmpty()) {

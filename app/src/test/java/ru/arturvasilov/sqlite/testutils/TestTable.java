@@ -23,7 +23,7 @@ public class TestTable extends BaseTable<TestObject> {
     public void onCreate(@NonNull SQLiteDatabase database) {
         TableBuilder.create(this)
                 .intColumn(ID)
-                .stringColumn(TEXT)
+                .textColumn(TEXT)
                 .primaryKey(ID)
                 .execute(database);
     }

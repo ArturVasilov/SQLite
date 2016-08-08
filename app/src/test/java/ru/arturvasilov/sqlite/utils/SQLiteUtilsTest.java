@@ -9,7 +9,6 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 
 import ru.arturvasilov.sqlite.core.SQLite;
-import ru.arturvasilov.sqlite.utils.SQLiteUtils;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;

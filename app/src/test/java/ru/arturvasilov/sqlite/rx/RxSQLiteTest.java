@@ -16,10 +16,10 @@ import java.util.List;
 
 import ru.arturvasilov.sqlite.BuildConfig;
 import ru.arturvasilov.sqlite.core.SQLite;
-import ru.arturvasilov.sqlite.testutils.SQLiteEnv;
 import ru.arturvasilov.sqlite.core.Table;
 import ru.arturvasilov.sqlite.core.Where;
 import ru.arturvasilov.sqlite.testutils.RxUtils;
+import ru.arturvasilov.sqlite.testutils.SQLiteEnv;
 import ru.arturvasilov.sqlite.testutils.TestObject;
 import ru.arturvasilov.sqlite.testutils.TestTable;
 import rx.Observable;
@@ -54,7 +54,7 @@ public class RxSQLiteTest {
 
     @Test
     public void testSingleElement() throws Exception {
-        TestObject testElement = new TestObject(10, "abc");
+        TestObject testElement = new TestObject(10, 10, "abc");
         SQLite.get().insert(TestTable.TABLE, testElement);
 
         TestObject savedElement = RxSQLite.get()
@@ -68,11 +68,11 @@ public class RxSQLiteTest {
     @Test
     public void testElementsList() throws Exception {
         List<TestObject> elements = new ArrayList<>();
-        elements.add(new TestObject(1, "a"));
-        elements.add(new TestObject(2, "ab"));
-        elements.add(new TestObject(3, "abc"));
-        elements.add(new TestObject(4, "abcd"));
-        elements.add(new TestObject(5, "abcde"));
+        elements.add(new TestObject(1, 9.5, "a"));
+        elements.add(new TestObject(2, 6.7, "ab"));
+        elements.add(new TestObject(3, 8.2, "abc"));
+        elements.add(new TestObject(4, 3.4, "abcd"));
+        elements.add(new TestObject(5, 6.5, "abcde"));
         SQLite.get().insert(TestTable.TABLE, elements);
 
         Observable.zip(RxSQLite.get().query(TestTable.TABLE),
@@ -93,14 +93,12 @@ public class RxSQLiteTest {
     @Test
     public void testQueryWithParameters() throws Exception {
         List<TestObject> elements = new ArrayList<>();
-        elements.add(new TestObject(1, "a"));
-        elements.add(new TestObject(2, "ab"));
-        elements.add(new TestObject(3, "abc"));
+        elements.add(new TestObject(1, 9.5, "a"));
+        elements.add(new TestObject(2, 6.7, "ab"));
+        elements.add(new TestObject(3, 8.2, "abc"));
         SQLite.get().insert(TestTable.TABLE, elements);
 
-        int count = RxSQLite.get().query(TestTable.TABLE, Where.create()
-                .where(TestTable.ID + " <= ?")
-                .whereArgs(new String[]{"2"}))
+        int count = RxSQLite.get().query(TestTable.TABLE, Where.create().lessThanOrEqualTo(TestTable.ID, 2))
                 .toBlocking()
                 .first()
                 .size();
@@ -126,15 +124,15 @@ public class RxSQLiteTest {
 
     @Test
     public void testInsertElement() throws Exception {
-        assertNotNull(RxSQLite.get().insert(TestTable.TABLE, new TestObject(100, "100"))
+        assertNotNull(RxSQLite.get().insert(TestTable.TABLE, new TestObject(100, 7, "100"))
                 .toBlocking().first());
     }
 
     @Test
     public void testInsertList() throws Exception {
         List<TestObject> elements = new ArrayList<>();
-        elements.add(new TestObject(1, "a"));
-        elements.add(new TestObject(2, "ab"));
+        elements.add(new TestObject(1, 9.5, "a"));
+        elements.add(new TestObject(2, 6.7, "ab"));
         int count = RxSQLite.get().insert(TestTable.TABLE, elements)
                 .toBlocking().first();
         assertEquals(2, count);
@@ -143,19 +141,15 @@ public class RxSQLiteTest {
     @Test
     public void testUpdateElement() throws Exception {
         List<TestObject> elements = new ArrayList<>();
-        elements.add(new TestObject(1, "a"));
-        elements.add(new TestObject(2, "ab"));
+        elements.add(new TestObject(1, 9.5, "a"));
+        elements.add(new TestObject(2, 6.7, "ab"));
         SQLite.get().insert(TestTable.TABLE, elements);
 
-        int count = RxSQLite.get().update(TestTable.TABLE, Where.create()
-                .where(TestTable.ID + "=?")
-                .whereArgs(new String[]{"2"}), new TestObject(2, "abc"))
+        int count = RxSQLite.get().update(TestTable.TABLE, Where.create().equalTo(TestTable.ID, 2), new TestObject(2, 6.7, "abc"))
                 .toBlocking().first();
         assertEquals(1, count);
 
-        RxSQLite.get().querySingle(TestTable.TABLE, Where.create()
-                .where(TestTable.ID + "=?")
-                .whereArgs(new String[]{"2"}))
+        RxSQLite.get().querySingle(TestTable.TABLE, Where.create().equalTo(TestTable.ID, 2))
                 .subscribe(new Action1<TestObject>() {
                     @Override
                     public void call(TestObject testObject) {
@@ -172,13 +166,11 @@ public class RxSQLiteTest {
     @Test
     public void testDeleteElement() throws Exception {
         List<TestObject> elements = new ArrayList<>();
-        elements.add(new TestObject(1, "a"));
-        elements.add(new TestObject(2, "ab"));
+        elements.add(new TestObject(1, 9.5, "a"));
+        elements.add(new TestObject(2, 6.7, "ab"));
         SQLite.get().insert(TestTable.TABLE, elements);
 
-        int count = RxSQLite.get().delete(TestTable.TABLE, Where.create()
-                .where(TestTable.ID + "=?")
-                .whereArgs(new String[]{"2"}))
+        int count = RxSQLite.get().delete(TestTable.TABLE, Where.create().equalTo(TestTable.ID, 2))
                 .toBlocking().first();
         assertEquals(1, count);
     }
@@ -186,9 +178,9 @@ public class RxSQLiteTest {
     @Test
     public void testClearTable() throws Exception {
         List<TestObject> elements = new ArrayList<>();
-        elements.add(new TestObject(1, "a"));
-        elements.add(new TestObject(2, "ab"));
-        elements.add(new TestObject(3, "abc"));
+        elements.add(new TestObject(1, 9.5, "a"));
+        elements.add(new TestObject(2, 6.7, "ab"));
+        elements.add(new TestObject(3, 8.2, "abc"));
         SQLite.get().insert(TestTable.TABLE, elements);
 
         int count = RxSQLite.get().delete(TestTable.TABLE).toBlocking().first();
@@ -202,7 +194,7 @@ public class RxSQLiteTest {
         Mockito.doNothing().when(action).call(any(Void.class));
         Subscription subscription = RxSQLite.get().observeChanges(TestTable.TABLE).subscribe(action);
 
-        SQLite.get().insert(TestTable.TABLE, new TestObject(10010, "changes"));
+        SQLite.get().insert(TestTable.TABLE, new TestObject(10010, 6.4, "changes"));
         Mockito.verify(action).call(null);
 
         //noinspection unchecked
@@ -222,7 +214,7 @@ public class RxSQLiteTest {
         Mockito.doNothing().when(action).call(anyListOf(TestObject.class));
         Subscription subscription = RxSQLite.get().observeChanges(TestTable.TABLE).withQuery().subscribe(action);
 
-        SQLite.get().insert(TestTable.TABLE, new TestObject(10410, "ca'pcj;s;vhjvksf;bgd"));
+        SQLite.get().insert(TestTable.TABLE, new TestObject(10410, 8.9, "ca'pcj;s;vhjvksf;bgd"));
         Mockito.verify(action).call(anyListOf(TestObject.class));
 
         //noinspection unchecked

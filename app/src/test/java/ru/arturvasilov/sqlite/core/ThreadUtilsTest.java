@@ -19,7 +19,7 @@ public class ThreadUtilsTest {
         Mockito.doNothing().when(testRunnable).run();
 
         ThreadUtils.runInBackground(createBackgroundRunnable(testRunnable));
-        Thread.sleep(10);
+        Thread.sleep(150);
 
         Mockito.verify(testRunnable).run();
     }

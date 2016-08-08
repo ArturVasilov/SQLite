@@ -132,7 +132,7 @@ public class SQLite {
      */
     @Nullable
     public <T> T querySingle(@NonNull Table<T> table, @NonNull Where where) {
-        Cursor cursor = mContext.getContentResolver().query(table.getUri(), null, where.where(), where.whereArgs(), null);
+        Cursor cursor = mContext.getContentResolver().query(table.getUri(), null, where.where(), where.whereArgs(), where.limit());
         try {
             if (SQLiteUtils.isEmptyCursor(cursor)) {
                 return null;

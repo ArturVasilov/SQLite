@@ -114,13 +114,11 @@ Every operation (query, insert, update, delete) exist both in direct and rx ways
 
 You can query for data like so:
 ```java
-Person person = SQLite.get().queryObject(PersonTable.TABLE, Where.create());
+Person person = SQLite.get().queryObject(PersonTable.TABLE);
 // or for list
-List<Person> persons = SQLite.get().query(PersonTable.TABLE, Where.create());
+List<Person> persons = SQLite.get().query(PersonTable.TABLE);
 // or with where
-List<Person> adults = SQLite.get().query(PersonTable.TABLE, Where.create()
-        .where(PersonTable.AGE + ">=?")
-        .whereArgs(new String[]{"18"}));
+List<Person> adults = SQLite.get().query(PersonTable.TABLE, Where.create().greaterThanOrEqualTo(PersonTable.AGE, 18));
 ```
 
 Similar way for RxSQLite:
@@ -230,10 +228,9 @@ public void onUpgrade(@NonNull SQLiteDatabase database) {
 ### Future plans
 
 1. Ability to swap storage to in-memory database for testing purposes
-2. Methods for queries parameters (such as between, where and so on) - it's required to write it using SQL syntax now which is not good
-3. Add SQLite bindings
-4. Add functions and triggers
-5. Generate most of boilerplate code
+2. Add SQLite bindings
+3. Add functions and triggers
+4. Generate most of boilerplate code
 
 ### Issues
 

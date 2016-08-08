@@ -23,7 +23,8 @@ public class BaseTableTest {
         Mockito.doNothing().when(database).execSQL(anyString());
 
         TestTable.TABLE.onCreate(database);
-        Mockito.verify(database).execSQL("CREATE TABLE IF NOT EXISTS TestTable(id INTEGER, text TEXT, PRIMARY KEY (id));");
+        String createSql = "CREATE TABLE IF NOT EXISTS TestTable(id INTEGER, rating REAL, text TEXT, PRIMARY KEY (id));";
+        Mockito.verify(database).execSQL(createSql);
     }
 
     @Test
@@ -33,6 +34,7 @@ public class BaseTableTest {
 
         TestTable.TABLE.onUpgrade(database);
         Mockito.verify(database).execSQL("DROP TABLE IF EXISTS TestTable");
-        Mockito.verify(database).execSQL("CREATE TABLE IF NOT EXISTS TestTable(id INTEGER, text TEXT, PRIMARY KEY (id));");
+        String createSql = "CREATE TABLE IF NOT EXISTS TestTable(id INTEGER, rating REAL, text TEXT, PRIMARY KEY (id));";
+        Mockito.verify(database).execSQL(createSql);
     }
 }

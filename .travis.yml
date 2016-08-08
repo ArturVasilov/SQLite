@@ -12,6 +12,10 @@ cache:
     - $HOME/.gradle/native
     - $HOME/.gradle/wrapper
 
+branches:
+  only:
+  - master
+	
 android:
   components:
     - tools

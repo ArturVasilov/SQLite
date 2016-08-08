@@ -8,8 +8,6 @@ import android.support.v4.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.arturvasilov.sqlite.utils.ThreadUtils;
-
 /**
  * @author Artur Vasilov
  */
@@ -57,7 +55,7 @@ final class Observers {
         unregisterObserver(context, (Object) observer);
     }
 
-    private <T> void unregisterObserver(@NonNull Context context, @NonNull Object object) {
+    private void unregisterObserver(@NonNull Context context, @NonNull Object object) {
         int index = -1;
         for (int i = 0; i < mObservers.size(); i++) {
             if (mObservers.get(i).first == object) {

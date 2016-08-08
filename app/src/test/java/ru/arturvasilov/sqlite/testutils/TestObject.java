@@ -8,15 +8,21 @@ import android.support.annotation.NonNull;
 public class TestObject {
 
     private final int mId;
+    private final double mRating;
     private String mText;
 
-    public TestObject(int id, @NonNull String text) {
+    public TestObject(int id, double rating, @NonNull String text) {
         mId = id;
+        mRating = rating;
         mText = text;
     }
 
     public int getId() {
         return mId;
+    }
+
+    public double getRating() {
+        return mRating;
     }
 
     @NonNull
@@ -35,7 +41,8 @@ public class TestObject {
 
         TestObject that = (TestObject) o;
 
-        return getId() == that.getId() && getText().equals(that.getText());
+        return getId() == that.getId() && Math.abs(getRating() - that.getRating()) < 0.000001
+                && getText().equals(that.getText());
 
     }
 

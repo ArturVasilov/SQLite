@@ -10,24 +10,26 @@ import android.support.annotation.NonNull;
  */
 class SQLiteHelper extends SQLiteOpenHelper {
 
-    private final Schema mSchema;
+    private final SQLiteSchema mSchema;
 
-    public SQLiteHelper(Context context, @NonNull SQLiteConfig config, @NonNull Schema schema) {
+    public SQLiteHelper(Context context, @NonNull SQLiteConfig config, @NonNull SQLiteSchema schema) {
         super(context, config.getDatabaseName(), null, schema.calculateVersion());
         mSchema = schema;
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase database) {
         for (Table table : mSchema) {
-            table.onCreate(db);
+            table.onCreate(database);
         }
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
         for (Table table : mSchema) {
-            table.onUpgrade(db, oldVersion, newVersion);
+            if (oldVersion < newVersion && newVersion <= table.getLastUpgradeVersion()) {
+                table.onUpgrade(database);
+            }
         }
     }
 }

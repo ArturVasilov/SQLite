@@ -1,4 +1,4 @@
-package ru.arturvasilov.sqlite.utils;
+package ru.arturvasilov.sqlite.core;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 /**
  * @author Artur Vasilov
  */
-public class MainHandler {
+class MainHandler {
 
     private static Handler sHandler;
 

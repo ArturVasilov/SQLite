@@ -113,7 +113,6 @@ public class MyApplication extends Application {
 3. _double_ and _float_ are supported with ```realColumn```.
 4. String, enums and custom objects should be saved as TEXT with ```textColumn``` method. For custom objects you may consider json serialization (relations is not in the nearest plan).
 
-
 ### Operations
 
 All operations should go through the SQLite or RxSQLite classes. You can access to ContentProvider directly, but note that you can loose features like observing changes in tables.

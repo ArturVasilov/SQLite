@@ -11,7 +11,7 @@ cache:
     - $HOME/.gradle/daemon
     - $HOME/.gradle/native
     - $HOME/.gradle/wrapper
-	
+
 android:
   components:
     - tools

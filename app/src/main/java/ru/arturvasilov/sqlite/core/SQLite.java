@@ -18,6 +18,10 @@ import ru.arturvasilov.sqlite.utils.SQLiteUtils;
  */
 public class SQLite {
 
+    static {
+        System.loadLibrary("sqliteX");
+    }
+
     private static SQLite sSQLite;
 
     private final Context mContext;

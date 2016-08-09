@@ -1,9 +1,10 @@
 package ru.arturvasilov.sqlite.core;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
+
+import org.sqlite.database.sqlite.SQLiteDatabase;
+import org.sqlite.database.sqlite.SQLiteOpenHelper;
 
 /**
  * @author Artur Vasilov
@@ -13,8 +14,9 @@ class SQLiteHelper extends SQLiteOpenHelper {
     private final SQLiteSchema mSchema;
 
     public SQLiteHelper(Context context, @NonNull SQLiteConfig config, @NonNull SQLiteSchema schema) {
-        super(context, config.getDatabaseName(), null, schema.calculateVersion());
+        super(context, context.getDatabasePath(config.getDatabaseName()).getPath(), null, schema.calculateVersion());
         mSchema = schema;
+        context.openOrCreateDatabase(config.getDatabaseName(), 0, null, null);
     }
 
     @Override

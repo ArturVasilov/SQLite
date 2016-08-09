@@ -1,7 +1,9 @@
 package ru.arturvasilov.sqlite.utils;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
+
+import org.sqlite.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +71,11 @@ public final class TableBuilder {
     }
 
     public void execute(@NonNull SQLiteDatabase database) {
+        database.execSQL(buildSQL());
+    }
+
+    @VisibleForTesting
+    String buildSQL() {
         if (mIntegerColumns.isEmpty() && mRealColumns.isEmpty() && mTextColumns.isEmpty()) {
             throw new IllegalStateException("Cannot create table with no columns");
         }
@@ -122,7 +129,7 @@ public final class TableBuilder {
         }
         builder.append(");");
 
-        database.execSQL(builder.toString());
+        return builder.toString();
     }
 
 }

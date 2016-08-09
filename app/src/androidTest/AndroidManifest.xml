@@ -1,0 +1,13 @@
+<manifest package="ru.arturvasilov.sqlite"
+          xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+
+        <provider
+            android:name=".testutils.SQLiteProvider"
+            android:authorities="ru.arturvasilov.sqlite"
+            android:exported="false"/>
+
+    </application>
+
+</manifest>

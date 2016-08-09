@@ -2,9 +2,10 @@ package ru.arturvasilov.sqlite.core;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+
+import org.sqlite.database.sqlite.SQLiteDatabase;
 
 /**
  * Interface for creating a single table in SQLite database.

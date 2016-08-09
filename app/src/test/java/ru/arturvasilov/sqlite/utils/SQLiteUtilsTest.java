@@ -1,14 +1,10 @@
 package ru.arturvasilov.sqlite.utils;
 
-import android.content.Context;
 import android.database.Cursor;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.mockito.Mockito;
-
-import ru.arturvasilov.sqlite.core.SQLite;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -24,16 +20,6 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(JUnit4.class)
 public class SQLiteUtilsTest {
-
-    @Test
-    public void testInitialized() throws Exception {
-        Context context = Mockito.mock(Context.class);
-        Context appContext = Mockito.mock(Context.class);
-        when(context.getApplicationContext()).thenReturn(appContext);
-        SQLite.initialize(context);
-
-        SQLite.get();
-    }
 
     @Test
     public void testCursorEmptyNull() throws Exception {

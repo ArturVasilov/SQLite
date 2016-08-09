@@ -14,14 +14,24 @@ cache:
 
 android:
   components:
+    - platform-tools
     - tools
     - build-tools-24.0.1
     - android-24
+    - extra-google-google_play_services
     - extra-android-support
     - extra-android-m2repository
+    - sys-img-armeabi-v7a-android-21
+
+# Emulator Management: Create, Start and Wait
+before_script:
+  - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 
 script:
-  - ./gradlew clean :app:testDebugUnitTest :app:jacocoTestReport :app:coveralls
+  - ./gradlew clean :app:testDebugUnitTest :app:createDebugCoverageReport :app:jacocoTestReport :app:coveralls
 
 notifications:
 email: false

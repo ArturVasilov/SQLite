@@ -127,6 +127,19 @@ public class WhereTest {
     }
 
     @Test
+    public void testGroups() throws Exception {
+        Where where = Where.create()
+                .beginGroup()
+                    .greaterThanOrEqualTo("age", 18)
+                    .or()
+                    .lessThan("age", 50)
+                .endGroup()
+                .and()
+                .like("name", "Sm");
+        checkWhere("(age >= ? OR age < ?) AND name LIKE ?", new String[]{"18", "50", "Sm"}, null, where);
+    }
+
+    @Test
     public void testComplexQuery() throws Exception {
         Where where = Where.create()
                 .in("id", 18, 20, 24)

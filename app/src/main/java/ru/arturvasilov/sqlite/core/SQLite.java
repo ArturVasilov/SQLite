@@ -18,6 +18,10 @@ import ru.arturvasilov.sqlite.utils.SQLiteUtils;
  */
 public class SQLite {
 
+    static {
+        System.loadLibrary("sqliteX");
+    }
+
     private static SQLite sSQLite;
 
     private final Context mContext;
@@ -236,11 +240,25 @@ public class SQLite {
      * Attaches callback to get notified about changes in certain table and query all rows
      * For more information take a look at {@link ContentTableObserver}
      *
+     * {@link SQLite#registerObserver(Table, ContentTableObserver, Where)}
+     *
      * @param table - table to observe changes in
      * @param observer - listener which will be called when table changes
      */
     public <T> void registerObserver(@NonNull Table<T> table, @NonNull final ContentTableObserver<T> observer) {
-        mObservers.registerObserver(mContext, table, observer);
+        mObservers.registerObserver(mContext, table, observer, Where.create());
+    }
+
+    /**
+     * Attaches callback to get notified about changes in certain table and query rows which satisfies where parameter
+     * For more information take a look at {@link ContentTableObserver}
+     *
+     * @param table - table to observe changes in
+     * @param observer - listener which will be called when table changes
+     * @param where - arguments for query
+     */
+    public <T> void registerObserver(@NonNull Table<T> table, @NonNull ContentTableObserver<T> observer, @NonNull Where where) {
+        mObservers.registerObserver(mContext, table, observer, where);
     }
 
     /**

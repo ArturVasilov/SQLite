@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import ru.arturvasilov.sqlite.core.Table;
+import ru.arturvasilov.sqlite.core.Where;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
@@ -34,16 +35,31 @@ class TableObservable<T> extends Observable<Void> {
 
     /**
      * This method transforms notifications observable to the observable with list of all objects in the table.
+     *
      * It also works in the background.
      *
      * @return observable with all elements from the table
      */
     @NonNull
     public Observable<List<T>> withQuery() {
+        return withQuery(Where.create());
+    }
+
+    /**
+     * This method transforms notifications observable to the observable
+     * with list of all objects in the table which satisfies where parameter
+     *
+     * It also works in the background.
+     *
+     * @param where - arguments to query table
+     * @return observable with all elements from the table
+     */
+    @NonNull
+    public Observable<List<T>> withQuery(@NonNull final Where where) {
         return flatMap(new Func1<Void, Observable<List<T>>>() {
             @Override
             public Observable<List<T>> call(Void value) {
-                return RxSQLite.get().query(mTable);
+                return RxSQLite.get().query(mTable, where);
             }
         })
                 .subscribeOn(Schedulers.io());

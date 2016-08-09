@@ -15,7 +15,7 @@ Database library for Android based on SQLite and ContentProvider, which provides
 ### Gradle
 
 ```groovy
-compile 'ru.arturvasilov:sqlite:0.1.1'
+compile 'ru.arturvasilov:sqlite:0.1.2'
 ```
 
 ### Tables:
@@ -70,7 +70,7 @@ After creating tables your need to specify ContentProvider, where you add these 
 ```java
 public class SQLiteProvider extends SQLiteContentProvider {
 
-    private static final String DATABASE_NAME = "com.myapp.database";
+    private static final String DATABASE_NAME = "mydatabase.db";
     private static final String CONTENT_AUTHORITY = "com.myapp";
 
     @Override

@@ -39,7 +39,6 @@ public class JUnitTestObject {
 
         return getId() == that.getId() && Math.abs(getRating() - that.getRating()) < 0.000001
                 && getText().equals(that.getText());
-
     }
 
     @Override

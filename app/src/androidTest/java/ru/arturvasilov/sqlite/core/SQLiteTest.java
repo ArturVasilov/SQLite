@@ -3,6 +3,8 @@ package ru.arturvasilov.sqlite.core;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -77,6 +79,12 @@ public class SQLiteTest {
     }
 
     @Test
+    public void testQueryNull() throws Exception {
+        TestObject testObject = SQLite.get().querySingle(TestTable.TABLE);
+        Assert.assertNull(testObject);
+    }
+
+    @Test
     public void testQueryList() throws Exception {
         List<TestObject> elements = new ArrayList<>();
         elements.add(new TestObject(110, 0, "a"));
@@ -103,6 +111,12 @@ public class SQLiteTest {
     public void testEmptyList() throws Exception {
         List<TestObject> elements = SQLite.get().query(TestTable.TABLE);
         assertTrue(elements.isEmpty());
+    }
+
+    @Test
+    public void testInsertEmptyList() throws Exception {
+        int count = SQLite.get().insert(TestTable.TABLE, new ArrayList<TestObject>());
+        assertEquals(0, count);
     }
 
     @Test
@@ -243,5 +257,6 @@ public class SQLiteTest {
     @After
     public void tearDown() throws Exception {
         SQLite.get().delete(TestTable.TABLE);
+        SQLite.reset();
     }
 }

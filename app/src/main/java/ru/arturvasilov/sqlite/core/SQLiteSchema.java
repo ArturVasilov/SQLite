@@ -49,6 +49,9 @@ public class SQLiteSchema implements Iterable<Table> {
     @NonNull
     String findTable(@NonNull Uri uri) {
         int index = mUriMatcher.match(uri);
+        if (index < 0 || index >= mTables.size()) {
+            return "";
+        }
         return mTables.get(index).getTableName();
     }
 

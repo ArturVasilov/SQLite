@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 
+import static org.mockito.Mockito.times;
+
 /**
  * @author Artur Vasilov
  */
@@ -19,9 +21,25 @@ public class ThreadUtilsTest {
         Mockito.doNothing().when(testRunnable).run();
 
         ThreadUtils.runInBackground(createBackgroundRunnable(testRunnable));
-        Thread.sleep(150);
+        Thread.sleep(200);
 
         Mockito.verify(testRunnable).run();
+    }
+
+    @Test
+    public void testActionRejectionHandled() throws Exception {
+        final Runnable testRunnable = Mockito.mock(Runnable.class);
+        Mockito.doNothing().when(testRunnable).run();
+
+        ThreadUtils.runInBackground(createBackgroundRunnable(testRunnable));
+        ThreadUtils.runInBackground(createBackgroundRunnable(testRunnable));
+        ThreadUtils.runInBackground(createBackgroundRunnable(testRunnable));
+        ThreadUtils.runInBackground(createBackgroundRunnable(testRunnable));
+        ThreadUtils.runInBackground(createBackgroundRunnable(testRunnable));
+        ThreadUtils.runInBackground(createBackgroundRunnable(testRunnable));
+        Thread.sleep(3000);
+
+        Mockito.verify(testRunnable, times(6)).run();
     }
 
     @NonNull

@@ -185,14 +185,14 @@ public class RxSQLiteTest {
         Subscription subscription = RxSQLite.get().observeChanges(TestTable.TABLE).subscribe(action);
 
         SQLite.get().insert(TestTable.TABLE, new TestObject(10010, 6.4, "changes"));
-        Thread.sleep(1500);
+        Thread.sleep(300);
         Mockito.verify(action).call(null);
 
         Mockito.reset(action);
         subscription.unsubscribe();
 
         SQLite.get().delete(TestTable.TABLE);
-        Thread.sleep(1500);
+        Thread.sleep(300);
         Mockito.verifyNoMoreInteractions(action);
     }
 
@@ -204,14 +204,14 @@ public class RxSQLiteTest {
         Subscription subscription = RxSQLite.get().observeChanges(TestTable.TABLE).withQuery().subscribe(action);
 
         SQLite.get().insert(TestTable.TABLE, new TestObject(10410, 8.9, "ca'pcj;s;vhjvksf;bgd"));
-        Thread.sleep(1500);
+        Thread.sleep(300);
         Mockito.verify(action).call(anyListOf(TestObject.class));
 
         Mockito.reset(action);
         subscription.unsubscribe();
 
         SQLite.get().delete(TestTable.TABLE);
-        Thread.sleep(1500);
+        Thread.sleep(300);
         Mockito.verifyNoMoreInteractions(action);
     }
 
@@ -229,7 +229,7 @@ public class RxSQLiteTest {
         list.add(new TestObject(8, 7.6, "text2"));
         list.add(new TestObject(9, 4, "tex7"));
         SQLite.get().insert(TestTable.TABLE, list);
-        Thread.sleep(1500);
+        Thread.sleep(300);
 
         ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
         Mockito.verify(action).call(captor.capture());

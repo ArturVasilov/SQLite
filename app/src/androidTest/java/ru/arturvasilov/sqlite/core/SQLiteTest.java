@@ -210,12 +210,14 @@ public class SQLiteTest {
 
         SQLite.get().insert(TestTable.TABLE, new TestObject(5, 6, "text"));
         SQLite.get().delete(TestTable.TABLE);
+        Thread.sleep(300);
 
         Mockito.verify(observer, times(2)).onTableChanged();
 
         Mockito.reset(observer);
         SQLite.get().unregisterObserver(observer);
         SQLite.get().insert(TestTable.TABLE, new TestObject(5, 6, "text"));
+        Thread.sleep(300);
         Mockito.verifyNoMoreInteractions(observer);
     }
 
@@ -227,12 +229,13 @@ public class SQLiteTest {
         SQLite.get().registerObserver(TestTable.TABLE, observer);
 
         SQLite.get().insert(TestTable.TABLE, new TestObject(5, 9.7, "text"));
-        Thread.sleep(100); //data will be queried asynchronously
+        Thread.sleep(300);
         Mockito.verify(observer).onTableChanged(anyListOf(TestObject.class));
 
         Mockito.reset(observer);
         SQLite.get().unregisterObserver(observer);
         SQLite.get().delete(TestTable.TABLE);
+        Thread.sleep(300);
         Mockito.verifyNoMoreInteractions(observer);
     }
 
@@ -247,7 +250,7 @@ public class SQLiteTest {
         list.add(new TestObject(5, 9.7, "text"));
         list.add(new TestObject(6, 8, "text2"));
         SQLite.get().insert(TestTable.TABLE, list);
-        Thread.sleep(100); //data will be queried asynchronously
+        Thread.sleep(300);
 
         ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
         Mockito.verify(observer).onTableChanged(captor.capture());

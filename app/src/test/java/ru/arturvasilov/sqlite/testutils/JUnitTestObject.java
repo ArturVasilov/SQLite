@@ -9,7 +9,7 @@ public class JUnitTestObject {
 
     private final int mId;
     private final double mRating;
-    private String mText;
+    private final String mText;
 
     public JUnitTestObject(int id, double rating, @NonNull String text) {
         mId = id;

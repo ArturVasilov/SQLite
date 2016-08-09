@@ -102,6 +102,18 @@ public class Where {
     }
 
     @NonNull
+    public Where beginGroup() {
+        mWhereBuilder.append("(");
+        return this;
+    }
+
+    @NonNull
+    public Where endGroup() {
+        mWhereBuilder.append(")");
+        return this;
+    }
+
+    @NonNull
     public Where and() {
         mWhereBuilder.append(" AND ");
         return this;

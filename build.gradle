@@ -5,7 +5,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath 'com.android.tools.build:gradle:2.2.0-beta1'
 		classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
 		classpath 'org.jacoco:org.jacoco.core:0.7.6.201602180812'
 
@@ -38,5 +38,5 @@ task clean(type: Delete) {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '2.14'
+  gradleVersion = '2.14.1'
 }

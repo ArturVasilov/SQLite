@@ -8,6 +8,28 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Class for constructing SQL queries using Java methods.
+ * All most popular operators (=, <>, >, <, >=, <=, LIKE, BETWEEN, IN, OR, AND) are supported.
+ * <p/>
+ * If there is no method that you need, you can always construct query manually with {@link Where#where(String, Object...)}.
+ * <p/>
+ * Class also supports LIMIT and OFFSET with methods {@link Where#limit(int)} and {@link Where#offset(int)} respectively.
+ * <p/>
+ * Typical usage of this class looks like this:
+ * <pre>
+ * {code
+ * Where where = Where.create()
+ *       .beginGroup()
+ *           .greaterThanOrEqualTo("age", 18)
+ *           .or()
+ *           .lessThan("age", 50)
+ *       .endGroup()
+ *       .and()
+ *       .like("name", "Sm")
+ *       .limit(1);
+ * }
+ * </pre>
+ *
  * @author Artur Vasilov
  */
 public class Where {

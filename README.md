@@ -37,7 +37,7 @@ public class PersonTable extends BaseTable<Person> {
     public void onCreate(@NonNull SQLiteDatabase database) {
         TableBuilder.create(this)
                 .intColumn(ID)
-                .stringColumn(NAME)
+                .textColumn(NAME)
                 .intColumn(AGE)
                 .primaryKey(ID)
                 .execute(database);
@@ -231,6 +231,10 @@ public void onUpgrade(@NonNull SQLiteDatabase database) {
     onCreate(database);
 }
 ```
+
+### Samples:
+
+[StackDroid](https://github.com/ArturVasilov/StackDroid) application uses this library to work with database.
 
 ### Future plans
 

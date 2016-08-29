@@ -15,7 +15,7 @@ Database library for Android based on SQLite and ContentProvider, which provides
 ### Gradle
 
 ```groovy
-compile 'ru.arturvasilov:sqlite:0.1.2'
+compile 'ru.arturvasilov:sqlite:0.1.3'
 ```
 
 ### Tables:
@@ -144,6 +144,9 @@ And it's all the same for other operations.
 ### Observing changes
 
 Observing changes in database is a great way for communication between your UI classes and network layer. This library provides flexible implementation of this pattern.
+
+Note that starting from version 0.1.3 automatic notifications are disabled by default.
+You can either update call ```SQLite.get().notifyTableChanged(Table)``` manually or enable automatic notifications (notifications will be send for each single operation) with ```SQLite.get().enableAutomaticNotifications()```
 
 Get notified when table changed:
 ```java

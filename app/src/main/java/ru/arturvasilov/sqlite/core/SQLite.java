@@ -2,6 +2,7 @@ package ru.arturvasilov.sqlite.core;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -28,15 +29,18 @@ public class SQLite {
 
     private final Observers mObservers;
 
+    private boolean mIsAutomaticNotificationsEnabled;
+
     private SQLite(@NonNull Context context) {
         mContext = context;
         mObservers = new Observers();
+        mIsAutomaticNotificationsEnabled = false;
     }
 
     /**
      * This method creates singleton instance of the SQLite and allows you to use non-parametrized method
      * {@link SQLite#get()} at any place of your app.
-     *
+     * <p/>
      * Typically you will call this method in your {@link android.app.Application} class like this:
      * <pre>
      * {@code
@@ -150,14 +154,14 @@ public class SQLite {
     /**
      * This method inserts object to the table. In cases of conflict the old object will be replaced by the new one.
      *
-     * @param table - table in which you want to insert object
+     * @param table  - table in which you want to insert object
      * @param object - object to insert in database
      * @return uri of inserted object. In most cases you won't use it.
      */
     @Nullable
     public <T> Uri insert(@NonNull Table<T> table, @NonNull T object) {
         Uri uri = mContext.getContentResolver().insert(table.getUri(), table.toValues(object));
-        if (uri != null) {
+        if (uri != null && mIsAutomaticNotificationsEnabled) {
             notifyTableChanged(table);
         }
         return uri;
@@ -166,7 +170,7 @@ public class SQLite {
     /**
      * This method inserts objects to the table. In cases of conflict the old objects will be replaced by the new ones.
      *
-     * @param table - table in which you want to insert objects
+     * @param table   - table in which you want to insert objects
      * @param objects - list of objects to insert in database
      * @return count of successfully inserted objects
      */
@@ -176,7 +180,7 @@ public class SQLite {
             values[i] = table.toValues(objects.get(i));
         }
         int count = mContext.getContentResolver().bulkInsert(table.getUri(), values);
-        if (count > 0) {
+        if (count > 0 && mIsAutomaticNotificationsEnabled) {
             notifyTableChanged(table);
         }
         return count;
@@ -202,7 +206,7 @@ public class SQLite {
      */
     public <T> int delete(@NonNull Table<T> table, @NonNull Where where) {
         int count = mContext.getContentResolver().delete(table.getUri(), where.where(), where.whereArgs());
-        if (count > 0) {
+        if (count > 0 && mIsAutomaticNotificationsEnabled) {
             notifyTableChanged(table);
         }
         return count;
@@ -211,15 +215,15 @@ public class SQLite {
     /**
      * This method updates all rows in the table which satisfy where parameter
      *
-     * @param table - table where you want to update rows
-     * @param where - arguments for update rows in the table
+     * @param table     - table where you want to update rows
+     * @param where     - arguments for update rows in the table
      * @param newObject - object which will replace all rows which satisfy where parameter
      * @return count of updated objects
      */
     public <T> int update(@NonNull Table<T> table, @NonNull Where where, @NonNull T newObject) {
         int count = mContext.getContentResolver().update(table.getUri(), table.toValues(newObject),
                 where.where(), where.whereArgs());
-        if (count > 0) {
+        if (count > 0 && mIsAutomaticNotificationsEnabled) {
             notifyTableChanged(table);
         }
         return count;
@@ -229,7 +233,7 @@ public class SQLite {
      * Attaches callback to get notified about changes in certain table
      * For more information take a look at {@link BasicTableObserver}
      *
-     * @param table - table to observe changes in
+     * @param table    - table to observe changes in
      * @param observer - listener which will be called when table changes
      */
     public <T> void registerObserver(@NonNull Table<T> table, @NonNull final BasicTableObserver observer) {
@@ -239,10 +243,10 @@ public class SQLite {
     /**
      * Attaches callback to get notified about changes in certain table and query all rows
      * For more information take a look at {@link ContentTableObserver}
-     *
+     * <p/>
      * {@link SQLite#registerObserver(Table, ContentTableObserver, Where)}
      *
-     * @param table - table to observe changes in
+     * @param table    - table to observe changes in
      * @param observer - listener which will be called when table changes
      */
     public <T> void registerObserver(@NonNull Table<T> table, @NonNull final ContentTableObserver<T> observer) {
@@ -253,9 +257,9 @@ public class SQLite {
      * Attaches callback to get notified about changes in certain table and query rows which satisfies where parameter
      * For more information take a look at {@link ContentTableObserver}
      *
-     * @param table - table to observe changes in
+     * @param table    - table to observe changes in
      * @param observer - listener which will be called when table changes
-     * @param where - arguments for query
+     * @param where    - arguments for query
      */
     public <T> void registerObserver(@NonNull Table<T> table, @NonNull ContentTableObserver<T> observer, @NonNull Where where) {
         mObservers.registerObserver(mContext, table, observer, where);
@@ -279,7 +283,27 @@ public class SQLite {
         mObservers.unregisterObserver(mContext, observer);
     }
 
-    private <T> void notifyTableChanged(@NonNull Table<T> table) {
+    /**
+     * Enables {@link android.content.ContentResolver#notifyChange(Uri, ContentObserver)}
+     * automatic calls when table changes from SQLite methods.
+     *
+     * By default automatic notifications are disabled to let you have more control on them.
+     */
+    public void enabledAutomaticNotifications() {
+        mIsAutomaticNotificationsEnabled = true;
+    }
+
+    /**
+     * Disables {@link android.content.ContentResolver#notifyChange(Uri, ContentObserver)}
+     * automatic calls when table changes from SQLite methods.
+     *
+     * By default automatic notifications are disabled.
+     */
+    public void disabledAutomaticNotifications() {
+        mIsAutomaticNotificationsEnabled = false;
+    }
+
+    public <T> void notifyTableChanged(@NonNull Table<T> table) {
         mContext.getContentResolver().notifyChange(table.getUri(), null);
     }
 

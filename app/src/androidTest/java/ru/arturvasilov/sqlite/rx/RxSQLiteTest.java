@@ -40,6 +40,7 @@ public class RxSQLiteTest {
     public void setUp() throws Exception {
         SQLite.initialize(InstrumentationRegistry.getContext());
         RxUtils.setupTestSchedulers();
+        SQLite.get().disabledAutomaticNotifications();
     }
 
     @Test
@@ -180,6 +181,8 @@ public class RxSQLiteTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChange() throws Exception {
+        SQLite.get().enabledAutomaticNotifications();
+
         Action1<Void> action = Mockito.mock(Action1.class);
         Mockito.doNothing().when(action).call(any(Void.class));
         Subscription subscription = RxSQLite.get().observeChanges(TestTable.TABLE).subscribe(action);
@@ -199,6 +202,8 @@ public class RxSQLiteTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChangeWithData() throws Exception {
+        SQLite.get().enabledAutomaticNotifications();
+
         Action1<List<TestObject>> action = Mockito.mock(Action1.class);
         Mockito.doNothing().when(action).call(anyListOf(TestObject.class));
         Subscription subscription = RxSQLite.get().observeChanges(TestTable.TABLE).withQuery().subscribe(action);
@@ -218,6 +223,8 @@ public class RxSQLiteTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChangeWithDataAndQuery() throws Exception {
+        SQLite.get().enabledAutomaticNotifications();
+
         Action1<List<TestObject>> action = Mockito.mock(Action1.class);
         Mockito.doNothing().when(action).call(anyListOf(TestObject.class));
         RxSQLite.get().observeChanges(TestTable.TABLE)

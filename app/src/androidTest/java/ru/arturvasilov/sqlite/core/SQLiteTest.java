@@ -30,6 +30,7 @@ public class SQLiteTest {
     @Before
     public void setUp() throws Exception {
         SQLite.initialize(InstrumentationRegistry.getContext());
+        SQLite.get().disabledAutomaticNotifications();
     }
 
     @Test
@@ -204,6 +205,8 @@ public class SQLiteTest {
 
     @Test
     public void testObserveTableChange() throws Exception {
+        SQLite.get().enabledAutomaticNotifications();
+
         BasicTableObserver observer = Mockito.mock(BasicTableObserver.class);
         Mockito.doNothing().when(observer).onTableChanged();
         SQLite.get().registerObserver(TestTable.TABLE, observer);
@@ -224,6 +227,8 @@ public class SQLiteTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChangeWithData() throws Exception {
+        SQLite.get().enabledAutomaticNotifications();
+
         ContentTableObserver<TestObject> observer = Mockito.mock(ContentTableObserver.class);
         Mockito.doNothing().when(observer).onTableChanged(anyListOf(TestObject.class));
         SQLite.get().registerObserver(TestTable.TABLE, observer);
@@ -242,6 +247,8 @@ public class SQLiteTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChangeWithDataAndQuery() throws Exception {
+        SQLite.get().enabledAutomaticNotifications();
+
         ContentTableObserver<TestObject> observer = Mockito.mock(ContentTableObserver.class);
         Mockito.doNothing().when(observer).onTableChanged(anyListOf(TestObject.class));
         SQLite.get().registerObserver(TestTable.TABLE, observer, Where.create().equalTo(TestTable.ID, 5));
@@ -255,6 +262,40 @@ public class SQLiteTest {
         ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
         Mockito.verify(observer).onTableChanged(captor.capture());
         assertEquals(1, captor.getValue().size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testControlAutomaticUpdates() throws Exception {
+        ContentTableObserver<TestObject> observer = Mockito.mock(ContentTableObserver.class);
+        Mockito.doNothing().when(observer).onTableChanged(anyListOf(TestObject.class));
+        SQLite.get().registerObserver(TestTable.TABLE, observer, Where.create().equalTo(TestTable.ID, 100));
+
+        SQLite.get().insert(TestTable.TABLE, new TestObject(1000, 8.8, "None"));
+        Thread.sleep(300);
+
+        Mockito.verifyNoMoreInteractions(observer);
+
+        SQLite.get().enabledAutomaticNotifications();
+        SQLite.get().delete(TestTable.TABLE);
+        Thread.sleep(300);
+
+        ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
+        Mockito.verify(observer).onTableChanged(captor.capture());
+        assertEquals(0, captor.getValue().size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testManualNotify() throws Exception {
+        ContentTableObserver<TestObject> observer = Mockito.mock(ContentTableObserver.class);
+        Mockito.doNothing().when(observer).onTableChanged(anyListOf(TestObject.class));
+        SQLite.get().registerObserver(TestTable.TABLE, observer, Where.create().equalTo(TestTable.ID, 1));
+
+        SQLite.get().insert(TestTable.TABLE, new TestObject(1, 3.2, "hello"));
+        SQLite.get().notifyTableChanged(TestTable.TABLE);
+        Thread.sleep(300);
+        Mockito.verify(observer).onTableChanged(anyListOf(TestObject.class));
     }
 
     @After

@@ -301,6 +301,5 @@ public class SQLiteTest {
     @After
     public void tearDown() throws Exception {
         SQLite.get().delete(TestTable.TABLE);
-        SQLite.reset();
     }
 }

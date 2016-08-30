@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -286,7 +285,7 @@ public class SQLite {
     /**
      * Enables {@link android.content.ContentResolver#notifyChange(Uri, ContentObserver)}
      * automatic calls when table changes from SQLite methods.
-     *
+     * <p/>
      * By default automatic notifications are disabled to let you have more control on them.
      */
     public void enabledAutomaticNotifications() {
@@ -296,7 +295,7 @@ public class SQLite {
     /**
      * Disables {@link android.content.ContentResolver#notifyChange(Uri, ContentObserver)}
      * automatic calls when table changes from SQLite methods.
-     *
+     * <p/>
      * By default automatic notifications are disabled.
      */
     public void disabledAutomaticNotifications() {
@@ -305,10 +304,5 @@ public class SQLite {
 
     public <T> void notifyTableChanged(@NonNull Table<T> table) {
         mContext.getContentResolver().notifyChange(table.getUri(), null);
-    }
-
-    @VisibleForTesting
-    static void reset() {
-        sSQLite = null;
     }
 }

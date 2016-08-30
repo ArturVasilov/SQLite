@@ -8,6 +8,10 @@ import android.support.v4.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.arturvasilov.sqlite.rx.RxSQLite;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
+
 /**
  * @author Artur Vasilov
  */
@@ -34,13 +38,14 @@ final class Observers {
             @Override
             public void onChange(boolean selfChange) {
                 super.onChange(selfChange);
-                ThreadUtils.runInBackground(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<T> elements = SQLite.get().query(table, where);
-                        observer.onTableChanged(elements);
-                    }
-                });
+                RxSQLite.get().query(table, where)
+                        .observeOn(Schedulers.io())
+                        .subscribe(new Action1<List<T>>() {
+                            @Override
+                            public void call(List<T> list) {
+                                observer.onTableChanged(list);
+                            }
+                        });
             }
         };
         context.getContentResolver().registerContentObserver(table.getUri(), false, contentObserver);

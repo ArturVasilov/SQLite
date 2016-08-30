@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.arturvasilov.sqlite.rx.RxSQLite;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -25,7 +26,12 @@ final class Observers {
             @Override
             public void onChange(boolean selfChange) {
                 super.onChange(selfChange);
-                observer.onTableChanged();
+                MainHandler.getHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        observer.onTableChanged();
+                    }
+                });
             }
         };
         context.getContentResolver().registerContentObserver(table.getUri(), false, contentObserver);
@@ -40,6 +46,7 @@ final class Observers {
                 super.onChange(selfChange);
                 RxSQLite.get().query(table, where)
                         .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<List<T>>() {
                             @Override
                             public void call(List<T> list) {

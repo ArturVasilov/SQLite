@@ -146,7 +146,10 @@ And it's all the same for other operations.
 Observing changes in database is a great way for communication between your UI classes and network layer. This library provides flexible implementation of this pattern.
 
 Note that starting from version 0.1.3 automatic notifications are disabled by default.
-You can either update call ```SQLite.get().notifyTableChanged(Table)``` manually or enable automatic notifications (notifications will be send for each single operation) with ```SQLite.get().enableAutomaticNotifications()```
+You can either update call ```SQLite.get().notifyTableChanged(Table)``` manually or enable automatic notifications 
+(notifications will be send for each single operation) with ```SQLite.get().enableAutomaticNotifications()```. 
+
+Notifications about changes in table are called in the main thread.
 
 Get notified when table changed:
 ```java

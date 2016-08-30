@@ -15,7 +15,7 @@ Database library for Android based on SQLite and ContentProvider, which provides
 ### Gradle
 
 ```groovy
-compile 'ru.arturvasilov:sqlite:0.1.5'
+compile 'ru.arturvasilov:sqlite:0.1.6'
 ```
 
 ### Tables:

@@ -19,7 +19,7 @@ allprojects {
 ext {
     PUBLISH_GROUP_ID = 'ru.arturvasilov'
     PUBLISH_ARTIFACT_ID = 'sqlite'
-    PUBLISH_VERSION = '0.1.5'
+    PUBLISH_VERSION = '0.1.6'
 }
 
 allprojects {

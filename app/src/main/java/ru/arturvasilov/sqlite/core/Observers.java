@@ -39,7 +39,7 @@ final class Observers {
             public void onChange(boolean selfChange) {
                 super.onChange(selfChange);
                 RxSQLite.get().query(table, where)
-                        .observeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.io())
                         .subscribe(new Action1<List<T>>() {
                             @Override
                             public void call(List<T> list) {

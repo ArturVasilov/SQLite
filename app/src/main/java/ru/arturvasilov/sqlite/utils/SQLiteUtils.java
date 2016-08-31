@@ -1,7 +1,11 @@
 package ru.arturvasilov.sqlite.utils;
 
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import ru.arturvasilov.sqlite.core.SQLite;
+import ru.arturvasilov.sqlite.core.Table;
 
 /**
  * Utility class for safe methods to work with database.
@@ -11,6 +15,28 @@ import android.support.annotation.Nullable;
 public class SQLiteUtils {
 
     private SQLiteUtils() {
+    }
+
+    /**
+     * Fast method to determine if any rows in database exists in table
+     *
+     * @param table to test if it's empty
+     * @return whatever table is empty or not
+     */
+    public static <T> boolean isTableEmpty(@NonNull Table<T> table) {
+        Cursor cursor = SQLite.get().getContentResolver().query(
+                table.getUri(),
+                new String[] {"count(*) AS count"},
+                null,
+                null,
+                null);
+        try {
+            return cursor == null || cursor.getCount() == 0
+                    || !cursor.moveToFirst() || cursor.getInt(0) == 0;
+        }
+        finally {
+            safeCloseCursor(cursor);
+        }
     }
 
     /**

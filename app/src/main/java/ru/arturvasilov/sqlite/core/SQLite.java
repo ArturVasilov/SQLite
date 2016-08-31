@@ -1,5 +1,6 @@
 package ru.arturvasilov.sqlite.core;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.ContentObserver;
@@ -302,7 +303,29 @@ public class SQLite {
         mIsAutomaticNotificationsEnabled = false;
     }
 
+    /**
+     * Notifies all observers about table change. This call will invoke notifications for all observers,
+     * which are registered using one of the register method:
+     * {@link SQLite#registerObserver(Table, BasicTableObserver)}
+     * {@link SQLite#registerObserver(Table, ContentTableObserver)}
+     * {@link SQLite#registerObserver(Table, ContentTableObserver, Where)}
+     *
+     * @param table - uri from this table will be used for notification for observers
+     */
     public <T> void notifyTableChanged(@NonNull Table<T> table) {
         mContext.getContentResolver().notifyChange(table.getUri(), null);
+    }
+
+    /**
+     * Returns the instance of ContentResolver, which is used for all operations in {@link SQLite} class
+     *
+     * You may use it to work with data directly, but you should be careful, since you can loose
+     * features like automatic notifications about table changes.
+     *
+     * @return instance of ContentResolver which is associated with {@link SQLiteContentProvider}
+     */
+    @NonNull
+    public ContentResolver getContentResolver() {
+        return mContext.getContentResolver();
     }
 }

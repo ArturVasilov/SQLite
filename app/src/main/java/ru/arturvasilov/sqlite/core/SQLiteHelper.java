@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import org.sqlite.database.sqlite.SQLiteDatabase;
 import org.sqlite.database.sqlite.SQLiteOpenHelper;
 
+import ru.arturvasilov.sqlite.rx.RxSQLite;
+
 /**
  * @author Artur Vasilov
  */

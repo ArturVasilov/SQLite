@@ -289,7 +289,7 @@ public class SQLite {
      * <p/>
      * By default automatic notifications are disabled to let you have more control on them.
      */
-    public void enabledAutomaticNotifications() {
+    public void enableAutomaticNotifications() {
         mIsAutomaticNotificationsEnabled = true;
     }
 
@@ -299,7 +299,7 @@ public class SQLite {
      * <p/>
      * By default automatic notifications are disabled.
      */
-    public void disabledAutomaticNotifications() {
+    public void disableAutomaticNotifications() {
         mIsAutomaticNotificationsEnabled = false;
     }
 

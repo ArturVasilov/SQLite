@@ -1,4 +1,4 @@
-# SQLite [![Apache License](https://img.shields.io/badge/license-Apache%20v2-blue.svg)](https://github.com/ArturVasilov/SQLite/blob/master/LICENSE) [![Build Status](https://travis-ci.org/ArturVasilov/SQLite.png?branch=master)](https://github.com/ArturVasilov/SQLite) [![Coverage Status](https://coveralls.io/repos/github/ArturVasilov/SQLite/badge.svg#2)](https://coveralls.io/github/ArturVasilov/SQLite)
+# SQLite [![Apache License](https://img.shields.io/badge/license-Apache%20v2-blue.svg)](https://github.com/ArturVasilov/SQLite/blob/master/LICENSE) [![Build Status](https://travis-ci.org/ArturVasilov/SQLite.png?branch=master)](https://github.com/ArturVasilov/SQLite) [![Coverage Status](https://coveralls.io/repos/github/ArturVasilov/SQLite/badge.svg#3)](https://coveralls.io/github/ArturVasilov/SQLite)
 
 #### Yet another Android library for database
 
@@ -15,7 +15,7 @@ Database library for Android based on SQLite and ContentProvider, which provides
 ### Gradle
 
 ```groovy
-compile 'ru.arturvasilov:sqlite:0.1.8'
+compile 'ru.arturvasilov:sqlite:0.2.0'
 ```
 
 ### Tables:
@@ -188,14 +188,14 @@ Everything else is the same! And more, you don't need to care about performance,
 
 It's even more flexible with RxSQLite:
 ```java
-private Subscription mPersonsSubscription;
+private Disposable mPersonsDisposable;
 
 //...
 
 @Override
 protected void onResume() {
     super.onResume();
-    mPersonsSubscription = RxSQLite.get().observeChanges(PersonTable.TABLE)
+    mPersonsDisposable = RxSQLite.get().observeChanges(PersonTable.TABLE)
                 .subscribe(value -> {
                     // table changed
                 });
@@ -204,13 +204,13 @@ protected void onResume() {
 @Override
 protected void onPause() {
     super.onPause();
-    mPersonsSubscription.unsubscribe();
+    mPersonsDisposable.dispose();
 }
 ```
 
 You can also query all the table with one simple call:
 ```java
-mPersonsSubscription = RxSQLite.get().observeChanges(PersonTable.TABLE).withQuery().subscribe(persons -> {});
+mPersonsDisposable = RxSQLite.get().observeChanges(PersonTable.TABLE).withQuery().subscribe(persons -> {});
 ```
 
 *Note* you still have to manage subscription manually.
@@ -244,10 +244,10 @@ public void onUpgrade(@NonNull SQLiteDatabase database) {
 
 ### Future plans
 
-1. Ability to swap storage to in-memory database for testing purposes
-2. Add SQLite bindings
-3. Add functions and triggers
-4. Generate most of boilerplate code
+1. Support temporary entries in database
+2. Generate most of boilerplate code
+3. Support relations
+4. Add triggers and functions
 
 ### Issues
 

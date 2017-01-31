@@ -27,7 +27,7 @@ public class EmptyTableTest {
     @Before
     public void setUp() throws Exception {
         SQLite.initialize(InstrumentationRegistry.getContext());
-        SQLite.get().disabledAutomaticNotifications();
+        SQLite.get().disableAutomaticNotifications();
     }
 
     @Test

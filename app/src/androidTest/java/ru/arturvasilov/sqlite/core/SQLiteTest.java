@@ -30,7 +30,7 @@ public class SQLiteTest {
     @Before
     public void setUp() throws Exception {
         SQLite.initialize(InstrumentationRegistry.getContext());
-        SQLite.get().disabledAutomaticNotifications();
+        SQLite.get().disableAutomaticNotifications();
     }
 
     @Test
@@ -205,7 +205,7 @@ public class SQLiteTest {
 
     @Test
     public void testObserveTableChange() throws Exception {
-        SQLite.get().enabledAutomaticNotifications();
+        SQLite.get().enableAutomaticNotifications();
 
         BasicTableObserver observer = Mockito.mock(BasicTableObserver.class);
         Mockito.doNothing().when(observer).onTableChanged();
@@ -227,7 +227,7 @@ public class SQLiteTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChangeWithData() throws Exception {
-        SQLite.get().enabledAutomaticNotifications();
+        SQLite.get().enableAutomaticNotifications();
 
         ContentTableObserver<TestObject> observer = Mockito.mock(ContentTableObserver.class);
         Mockito.doNothing().when(observer).onTableChanged(anyListOf(TestObject.class));
@@ -247,7 +247,7 @@ public class SQLiteTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChangeWithDataAndQuery() throws Exception {
-        SQLite.get().enabledAutomaticNotifications();
+        SQLite.get().enableAutomaticNotifications();
 
         ContentTableObserver<TestObject> observer = Mockito.mock(ContentTableObserver.class);
         Mockito.doNothing().when(observer).onTableChanged(anyListOf(TestObject.class));
@@ -276,7 +276,7 @@ public class SQLiteTest {
 
         Mockito.verifyNoMoreInteractions(observer);
 
-        SQLite.get().enabledAutomaticNotifications();
+        SQLite.get().enableAutomaticNotifications();
         SQLite.get().delete(TestTable.TABLE);
         Thread.sleep(300);
 

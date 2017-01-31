@@ -40,7 +40,7 @@ public class RxSQLiteTest {
     public void setUp() throws Exception {
         SQLite.initialize(InstrumentationRegistry.getContext());
         RxUtils.setupTestSchedulers();
-        SQLite.get().disabledAutomaticNotifications();
+        SQLite.get().disableAutomaticNotifications();
     }
 
     @Test
@@ -178,7 +178,7 @@ public class RxSQLiteTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChange() throws Exception {
-        SQLite.get().enabledAutomaticNotifications();
+        SQLite.get().enableAutomaticNotifications();
 
         Consumer<Boolean> action = Mockito.mock(Consumer.class);
         Mockito.doNothing().when(action).accept(anyBoolean());
@@ -199,7 +199,7 @@ public class RxSQLiteTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChangeWithData() throws Exception {
-        SQLite.get().enabledAutomaticNotifications();
+        SQLite.get().enableAutomaticNotifications();
 
         Consumer<List<TestObject>> action = Mockito.mock(Consumer.class);
         Mockito.doNothing().when(action).accept(anyListOf(TestObject.class));
@@ -220,7 +220,7 @@ public class RxSQLiteTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testObserveTableChangeWithDataAndQuery() throws Exception {
-        SQLite.get().enabledAutomaticNotifications();
+        SQLite.get().enableAutomaticNotifications();
 
         Consumer<List<TestObject>> action = Mockito.mock(Consumer.class);
         Mockito.doNothing().when(action).accept(anyListOf(TestObject.class));

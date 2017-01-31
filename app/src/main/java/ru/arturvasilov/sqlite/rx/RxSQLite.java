@@ -3,20 +3,17 @@ package ru.arturvasilov.sqlite.rx;
 import android.content.Context;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import ru.arturvasilov.sqlite.core.BasicTableObserver;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
 import ru.arturvasilov.sqlite.core.SQLite;
 import ru.arturvasilov.sqlite.core.Table;
 import ru.arturvasilov.sqlite.core.Where;
-import rx.Observable;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.MainThreadSubscription;
-import rx.functions.Func1;
 
 /**
  * For the documentation please take a look at {@link SQLite},
@@ -88,7 +85,7 @@ public class RxSQLite {
      * <p/>
      * Observable is guarantee to contain no more than one element.
      * If you want to get observable of elements, simply call {@link RxSQLite#query(Table, Where)}
-     * all apply {@link Observable#flatMap(Func1)} with {@link Observable#from(Iterable)} to it.
+     * all apply {@link Observable#flatMap(Function)} with {@link Observable#fromIterable(Iterable)} to it.
      */
     @NonNull
     public <T> Observable<T> querySingle(@NonNull final Table<T> table, @NonNull final Where where) {
@@ -97,9 +94,9 @@ public class RxSQLite {
             public T call() throws Exception {
                 return SQLite.get().querySingle(table, where);
             }
-        }).flatMap(new Func1<T, Observable<T>>() {
+        }).flatMap(new Function<T, ObservableSource<T>>() {
             @Override
-            public Observable<T> call(@Nullable T t) {
+            public ObservableSource<T> apply(T t) throws Exception {
                 return t == null ? Observable.<T>empty() : Observable.just(t);
             }
         }).take(1);
@@ -170,19 +167,19 @@ public class RxSQLite {
      * Returns observable that emits new items when passed table is changed.
      * For more information please take a look at {@link TableObservable}
      * <p/>
-     * This observable never completes and there is no methods in RxSQLite to unsubscribe,
-     * so you have to control subscription manually like this:
+     * This observable never completes and there is no methods in RxSQLite to dispose,
+     * so you have to control disposables manually like this:
      * <p/>
      * <pre>
      * {code
-     * private Subscription mPersonsSubscription;
+     * private Disposable mPersonsDisposable;
      *
      * //...
      *
      * @Override
      * protected void onResume() {
      *  super.onResume();
-     *  mPersonsSubscription = RxSQLite.get().observeChanges(PersonTable.TABLE)
+     *  mPersonsDisposable = RxSQLite.get().observeChanges(PersonTable.TABLE)
      *      .subscribe(value -> {
      *          // table changed
      *      });
@@ -191,35 +188,14 @@ public class RxSQLite {
      * @Override
      * protected void onPause() {
      *  super.onPause();
-     *  mPersonsSubscription.unsubscribe();
+     *  mPersonsDisposable.dispose();
      * }
      * }
      * </pre>
-     * {@link Subscription#unsubscribe()} will also detach ContentProvider observer
+     * {@link Disposable#dispose()} will also detach ContentProvider observer
      */
     @NonNull
     public <T> TableObservable<T> observeChanges(@NonNull final Table<T> table) {
-        Observable.OnSubscribe<Void> onSubscribe = new Observable.OnSubscribe<Void>() {
-            @Override
-            public void call(final Subscriber<? super Void> subscriber) {
-                final BasicTableObserver observer = new BasicTableObserver() {
-                    @Override
-                    public void onTableChanged() {
-                        if (subscriber != null && !subscriber.isUnsubscribed()) {
-                            subscriber.onNext(null);
-                        }
-                    }
-                };
-                subscriber.add(new MainThreadSubscription() {
-                    @Override
-                    protected void onUnsubscribe() {
-                        SQLite.get().unregisterObserver(observer);
-                    }
-                });
-
-                SQLite.get().registerObserver(table, observer);
-            }
-        };
-        return new TableObservable<>(onSubscribe, table);
+        return new TableObservable<>(table);
     }
 }

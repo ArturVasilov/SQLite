@@ -4,12 +4,16 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.MainThreadDisposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
+import ru.arturvasilov.sqlite.core.BasicTableObserver;
+import ru.arturvasilov.sqlite.core.SQLite;
 import ru.arturvasilov.sqlite.core.Table;
 import ru.arturvasilov.sqlite.core.Where;
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Class which allows you to observe changes in {@link Table} in reactive way
@@ -17,25 +21,31 @@ import rx.schedulers.Schedulers;
  * Simple call of {@link RxSQLite#observeChanges(Table)} will return you an instance of this observable,
  * and you can any operations with this observable.
  * <p/>
- * For this Observable {@link rx.Subscriber#onNext(Object)} called each time when table changes
- * and {@link Subscriber#onCompleted()} is never called.
+ * For this Observable {@link Observer#onNext(Object)} called each time when table changes
+ * and {@link Observer#onComplete()} is never called.
  * <p/>
  * This observable add {@link TableObservable#withQuery()} method to allow you query all rows from the observed tabled.
  *
  * @author Artur Vasilov
  */
-class TableObservable<T> extends Observable<Void> {
+public class TableObservable<T> extends Observable<Boolean> {
 
     private final Table<T> mTable;
 
-    TableObservable(@NonNull OnSubscribe<Void> f, @NonNull Table<T> table) {
-        super(f);
+    TableObservable(@NonNull Table<T> table) {
         mTable = table;
+    }
+
+    @Override
+    protected void subscribeActual(Observer<? super Boolean> observer) {
+        TableListener tableListener = new TableListener(observer);
+        observer.onSubscribe(tableListener);
+        SQLite.get().registerObserver(mTable, tableListener);
     }
 
     /**
      * This method transforms notifications observable to the observable with list of all objects in the table.
-     *
+     * <p>
      * It also works in the background.
      *
      * @return observable with all elements from the table
@@ -48,7 +58,7 @@ class TableObservable<T> extends Observable<Void> {
     /**
      * This method transforms notifications observable to the observable
      * with list of all objects in the table which satisfies where parameter
-     *
+     * <p>
      * It also works in the background.
      *
      * @param where - arguments to query table
@@ -56,12 +66,31 @@ class TableObservable<T> extends Observable<Void> {
      */
     @NonNull
     public Observable<List<T>> withQuery(@NonNull final Where where) {
-        return flatMap(new Func1<Void, Observable<List<T>>>() {
+        return flatMap(new Function<Boolean, ObservableSource<List<T>>>() {
             @Override
-            public Observable<List<T>> call(Void value) {
+            public ObservableSource<List<T>> apply(Boolean value) throws Exception {
                 return RxSQLite.get().query(mTable, where);
             }
-        })
-                .subscribeOn(Schedulers.io());
+        }).subscribeOn(Schedulers.io());
     }
+
+    private class TableListener extends MainThreadDisposable implements BasicTableObserver {
+
+        private final Observer<? super Boolean> mObserver;
+
+        TableListener(@NonNull Observer<? super Boolean> observer) {
+            mObserver = observer;
+        }
+
+        @Override
+        public void onTableChanged() {
+            mObserver.onNext(true);
+        }
+
+        @Override
+        protected void onDispose() {
+            SQLite.get().unregisterObserver(this);
+        }
+    }
+
 }

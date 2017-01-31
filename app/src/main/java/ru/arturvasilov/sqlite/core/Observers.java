@@ -8,10 +8,10 @@ import android.support.v4.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 import ru.arturvasilov.sqlite.rx.RxSQLite;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * @author Artur Vasilov
@@ -47,9 +47,9 @@ final class Observers {
                 RxSQLite.get().query(table, where)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<List<T>>() {
+                        .subscribe(new Consumer<List<T>>() {
                             @Override
-                            public void call(List<T> list) {
+                            public void accept(List<T> list) throws Exception {
                                 observer.onTableChanged(list);
                             }
                         });

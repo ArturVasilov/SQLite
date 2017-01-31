@@ -3,9 +3,9 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.3.0-beta3'
 		classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.4.0'
-		classpath 'org.jacoco:org.jacoco.core:0.7.6.201602180812'
+		classpath 'org.jacoco:org.jacoco.core:0.7.8'
     }
 }
 
@@ -19,7 +19,7 @@ allprojects {
 ext {
     PUBLISH_GROUP_ID = 'ru.arturvasilov'
     PUBLISH_ARTIFACT_ID = 'sqlite'
-    PUBLISH_VERSION = '0.1.8'
+    PUBLISH_VERSION = '0.2.0'
 }
 
 allprojects {
@@ -33,5 +33,5 @@ task clean(type: Delete) {
 }
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '3.0'
+  gradleVersion = '3.3'
 }
